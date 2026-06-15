@@ -36,6 +36,8 @@ import { Controller, useForm } from 'react-hook-form';
 
 import * as z from 'zod';
 import { Calendar } from '@/components/ui/calendar';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 interface Props {
     params: Promise<{
@@ -116,6 +118,8 @@ export default function RegistrarAppealDetailPage(props: Props) {
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
+            // throw new Error('This is a test checklist error');
+
             const checklist = await apiFetch(
                 `/registrar/appeals/${id}/checklist`,
                 {
@@ -133,9 +137,11 @@ export default function RegistrarAppealDetailPage(props: Props) {
                     : prev,
             );
 
-            // toast success message - add later
+            // toast success message
+            toast.success('Checklist created successfully.');
         } catch (error) {
             console.error(error);
+            toast.error(getErrorMessage(error));
         }
     }
 
@@ -147,11 +153,13 @@ export default function RegistrarAppealDetailPage(props: Props) {
             });
 
             setIsDialogOpen(false);
-            router.push('/registrar');
 
-            // toast success message - add later
+            // toast success message
+            toast.success('Appeal sent to hearing.');
+            router.push('/registrar');
         } catch (error) {
             console.error(error);
+            toast.error(getErrorMessage(error));
         }
     }
 
@@ -162,11 +170,12 @@ export default function RegistrarAppealDetailPage(props: Props) {
                 body: JSON.stringify(data),
             });
 
-            router.push('/registrar');
-
             // toast success message - add later
+            toast.success('Appeal reverted to appellant.');
+            router.push('/registrar');
         } catch (error) {
             console.error(error);
+            toast.error(getErrorMessage(error));
         }
     }
 
@@ -177,6 +186,7 @@ export default function RegistrarAppealDetailPage(props: Props) {
                 setAppeal(appeal);
             } catch (error) {
                 console.error(error);
+                toast.error(getErrorMessage(error));
             } finally {
                 setIsLoading(false);
             }

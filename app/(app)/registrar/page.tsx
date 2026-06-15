@@ -5,6 +5,8 @@ import { DataTable } from '@/components/ui/data-table';
 import { type Appeal, columns } from './columns';
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 export default function RegistrarPage() {
     const [appeals, setAppeals] = useState<Appeal[]>([]);
@@ -18,6 +20,7 @@ export default function RegistrarPage() {
                 setAppeals(appealsList);
             } catch (error) {
                 console.error(error);
+                toast.error(getErrorMessage(error));
             } finally {
                 setIsLoading(false);
             }

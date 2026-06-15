@@ -17,10 +17,12 @@ import {
 } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import { apiFetch } from '@/lib/api';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import * as z from 'zod';
 
@@ -66,17 +68,21 @@ export default function VerifierAppealDetailPage(props: Props) {
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
+            // throw new Error('This is a test error');
+
             await apiFetch(`/verifier/appeals/${id}/verify`, {
                 method: 'PATCH',
                 body: JSON.stringify(data),
             });
 
             setIsDialogOpen(false);
-            router.push('/verifier');
 
-            // toast success message - add later
+            // toast success message
+            toast.success('Appeal forwarded to registrar.');
+            router.push('/verifier');
         } catch (error) {
             console.error(error);
+            toast.error(getErrorMessage(error));
         }
     }
 
@@ -87,6 +93,7 @@ export default function VerifierAppealDetailPage(props: Props) {
                 setAppeal(appeal);
             } catch (error) {
                 console.error(error);
+                toast.error(getErrorMessage(error));
             } finally {
                 setIsLoading(false);
             }

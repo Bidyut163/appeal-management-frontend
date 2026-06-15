@@ -4,9 +4,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiFetch } from '@/lib/api';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 import { DownloadIcon } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface Props {
     params: Promise<{
@@ -136,6 +138,7 @@ export default function AppealDetailPage(props: Props) {
                 setAppeal(data);
             } catch (error) {
                 console.error(error);
+                toast.error(getErrorMessage(error));
             } finally {
                 setIsLoading(false);
             }

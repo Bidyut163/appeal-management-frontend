@@ -7,6 +7,8 @@ import { apiFetch } from '@/lib/api';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 // const appeals: Appeal[] = [
 //     {
@@ -31,6 +33,7 @@ export default function AppealsPage() {
                 // console.log(appealsList);
             } catch (error) {
                 console.error(error);
+                toast.error(getErrorMessage(error));
             } finally {
                 setIsLoading(false);
             }

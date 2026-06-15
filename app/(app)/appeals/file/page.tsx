@@ -23,6 +23,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { apiFetch } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 const formSchema = z
     .object({
@@ -42,14 +44,18 @@ export default function FilePage() {
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         try {
+            // throw new Error('This is a test error');
+
             await apiFetch('/appeals', {
                 method: 'POST',
                 body: JSON.stringify(data),
             });
 
+            toast.success('Appeal filed successfully.');
             router.push('/appeals');
         } catch (error) {
             console.error(error);
+            toast.error(getErrorMessage(error));
         }
     }
 

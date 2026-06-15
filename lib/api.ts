@@ -12,8 +12,13 @@ export const apiFetch = async (endpoint: string, options?: RequestInit) => {
 
     if (!response.ok) {
         const error = await response.json();
+        throw new Error(error?.message ?? 'Something went wrong');
 
-        throw error;
+        // throw new Error(
+        //     typeof error?.message === 'string'
+        //         ? error.message
+        //         : 'Something went wrong',
+        // );
     }
 
     return response.json();

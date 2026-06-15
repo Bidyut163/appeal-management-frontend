@@ -27,6 +27,8 @@ import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
 
 import { getDefaultRoute } from '@/utils/getDefaultRoute';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/getErrorMessage';
 
 const formSchema = z.object({
     email: z.email('Invalid email'),
@@ -56,10 +58,12 @@ export default function LoginPage() {
 
             setUser(response.user);
 
+            toast.success(`Welcome, ${response.user.name}!`);
             // role specific redirects
             router.push(getDefaultRoute(response.user.roles));
         } catch (error) {
             console.error(error);
+            toast.error(getErrorMessage(error));
         }
     }
 
