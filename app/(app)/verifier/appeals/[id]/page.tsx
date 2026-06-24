@@ -19,8 +19,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { apiFetch } from '@/lib/api';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
+import { use, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -45,8 +46,8 @@ export default function VerifierAppealDetailPage(props: Props) {
     const { id } = use(props.params);
     const router = useRouter();
 
-    const [appeal, setAppeal] = useState<AppealDetail | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [appeal, setAppeal] = useState<AppealDetail | null>(null);
+    // const [isLoading, setIsLoading] = useState(true);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -86,21 +87,41 @@ export default function VerifierAppealDetailPage(props: Props) {
         }
     }
 
-    useEffect(() => {
-        const fetchAppeal = async () => {
-            try {
-                const appeal = await apiFetch(`/verifier/appeals/${id}`);
-                setAppeal(appeal);
-            } catch (error) {
-                console.error(error);
-                toast.error(getErrorMessage(error));
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchAppeal = async () => {
+    //         try {
+    //             const appeal = await apiFetch(`/verifier/appeals/${id}`);
+    //             setAppeal(appeal);
+    //         } catch (error) {
+    //             console.error(error);
+    //             toast.error(getErrorMessage(error));
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
 
-        fetchAppeal();
-    }, [id]);
+    //     fetchAppeal();
+    // }, [id]);
+
+    const {
+        data: appeal,
+        isLoading,
+        error,
+    } = useQuery<AppealDetail | null>({
+        queryKey: ['appeal', 'verifier', id],
+        queryFn: () => apiFetch(`/verifier/appeals/${id}`),
+    });
+
+    if (error) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Failed to load appeals</CardTitle>
+                </CardHeader>
+                <CardContent>{getErrorMessage(error)}</CardContent>
+            </Card>
+        );
+    }
 
     if (isLoading) {
         return (
@@ -125,7 +146,7 @@ export default function VerifierAppealDetailPage(props: Props) {
                     <CardTitle className="flex items-start justify-between">
                         <div>
                             <h1 className="text-xl font-semibold">
-                                Appeal #{id}
+                                Appeal #{appeal.id}
                             </h1>
                         </div>
                     </CardTitle>

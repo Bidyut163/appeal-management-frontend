@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiFetch } from '@/lib/api';
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { useQuery } from '@tanstack/react-query';
 
 import { DownloadIcon } from 'lucide-react';
-import { use, useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import { use } from 'react';
 
 interface Props {
     params: Promise<{
@@ -127,26 +127,34 @@ export default function AppealDetailPage(props: Props) {
     const { id } = use(props.params);
     // const appeal = await getAppeal(id);
 
-    const [appeal, setAppeal] = useState<AppealDetail | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [appeal, setAppeal] = useState<AppealDetail | null>(null);
+    // const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchAppeal = async () => {
-            try {
-                const data = await apiFetch(`/appeals/${id}`);
+    // useEffect(() => {
+    //     const fetchAppeal = async () => {
+    //         try {
+    //             const data = await apiFetch(`/appeals/${id}`);
 
-                setAppeal(data);
-            } catch (error) {
-                console.error(error);
-                toast.error(getErrorMessage(error));
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    //             setAppeal(data);
+    //         } catch (error) {
+    //             console.error(error);
+    //             toast.error(getErrorMessage(error));
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
 
-        fetchAppeal();
-    }, [id]);
+    //     fetchAppeal();
+    // }, [id]);
 
+    const {
+        data: appeal,
+        isLoading,
+        error,
+    } = useQuery<AppealDetail | null>({
+        queryKey: ['appeal', id],
+        queryFn: () => apiFetch(`/appeals/${id}`),
+    });
     // const {
     //     appellant,
     //     respondent,
@@ -159,6 +167,17 @@ export default function AppealDetailPage(props: Props) {
     // } = appeal;
 
     // await new Promise((res) => setTimeout(res, 2000));
+
+    if (error) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Failed to load appeals</CardTitle>
+                </CardHeader>
+                <CardContent>{getErrorMessage(error)}</CardContent>
+            </Card>
+        );
+    }
 
     if (isLoading) {
         return (
@@ -183,7 +202,9 @@ export default function AppealDetailPage(props: Props) {
             <CardHeader>
                 <CardTitle className="flex items-start justify-between">
                     <div>
-                        <h1 className="text-xl font-semibold">Appeal #{id}</h1>
+                        <h1 className="text-xl font-semibold">
+                            Appeal #{appeal.id}
+                        </h1>
                         <div className="mt-1 flex gap-2 items-center">
                             <span className="text-sm text-muted-foreground">
                                 Status:
@@ -204,14 +225,14 @@ export default function AppealDetailPage(props: Props) {
             </CardHeader>
             <CardContent className="space-y-6">
                 {/* Parties */}
-                <section className="space-y-2 border-b pb-4 last:border-none">
+                {/* <section className="space-y-2 border-b pb-4 last:border-none">
                     <h2 className="text-base font-semibold text-muted-foreground">
                         Parties
-                    </h2>
+                    </h2> */}
 
-                    {/* <InfoRow label="Appellant Name" value={appellant} /> */}
-                    {/* <InfoRow label="Respondent Name" value={respondent} /> */}
-                </section>
+                {/* <InfoRow label="Appellant Name" value={appellant} /> */}
+                {/* <InfoRow label="Respondent Name" value={respondent} /> */}
+                {/* </section> */}
 
                 {/* Address */}
                 {/* <section className="space-y-2 border-b pb-4 last:border-none">

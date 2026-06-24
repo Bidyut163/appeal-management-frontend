@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import { type Appeal, columns } from './columns';
 import { apiFetch } from '@/lib/api';
-import { useEffect, useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { toast } from 'sonner';
+
+import { useQuery } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 
 // const appeals: Appeal[] = [
@@ -22,25 +23,45 @@ import { getErrorMessage } from '@/utils/getErrorMessage';
 // ];
 
 export default function AppealsPage() {
-    const [appeals, setAppeals] = useState<Appeal[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [appeals, setAppeals] = useState<Appeal[]>([]);
+    // const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const getAllAppeals = async () => {
-            try {
-                const appealsList = await apiFetch('/appeals');
-                setAppeals(appealsList);
-                // console.log(appealsList);
-            } catch (error) {
-                console.error(error);
-                toast.error(getErrorMessage(error));
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const getAllAppeals = async () => {
+    //         try {
+    //             const appealsList = await apiFetch('/appeals');
+    //             setAppeals(appealsList);
+    //             // console.log(appealsList);
+    //         } catch (error) {
+    //             console.error(error);
+    //             toast.error(getErrorMessage(error));
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
 
-        getAllAppeals();
-    }, []);
+    //     getAllAppeals();
+    // }, []);
+
+    const {
+        data: appeals = [],
+        isLoading,
+        error,
+    } = useQuery<Appeal[]>({
+        queryKey: ['appeals'],
+        queryFn: () => apiFetch('/appeals'),
+    });
+
+    if (error) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Failed to load appeals</CardTitle>
+                </CardHeader>
+                <CardContent>{getErrorMessage(error)}</CardContent>
+            </Card>
+        );
+    }
 
     if (isLoading) {
         return (

@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 // Auth Provider - Zustand
 import AuthProvider from '@/providers/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
+import QueryProvider from '@/providers/QueryProvider';
 
 // const robotoHeading = Roboto({
 //     subsets: ['latin'],
@@ -44,7 +45,9 @@ export default function RootLayout({
             className={cn('h-full', 'antialiased', popins.variable)}
         >
             <body className={`min-h-full flex flex-col ${popins.className}`}>
-                <AuthProvider>{children}</AuthProvider>
+                <QueryProvider>
+                    <AuthProvider>{children}</AuthProvider>
+                </QueryProvider>
                 <Toaster
                     position="top-center"
                     richColors

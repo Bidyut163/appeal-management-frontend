@@ -3,30 +3,51 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTable } from '@/components/ui/data-table';
 import { type Appeal, columns } from './columns';
-import { useEffect, useState } from 'react';
+
 import { apiFetch } from '@/lib/api';
-import { toast } from 'sonner';
+
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { useQuery } from '@tanstack/react-query';
 
 export default function RegistrarPage() {
-    const [appeals, setAppeals] = useState<Appeal[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [appeals, setAppeals] = useState<Appeal[]>([]);
+    // const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchAppeals = async () => {
-            try {
-                const appealsList = await apiFetch('/registrar/appeals');
+    // useEffect(() => {
+    //     const fetchAppeals = async () => {
+    //         try {
+    //             const appealsList = await apiFetch('/registrar/appeals');
 
-                setAppeals(appealsList);
-            } catch (error) {
-                console.error(error);
-                toast.error(getErrorMessage(error));
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchAppeals();
-    }, []);
+    //             setAppeals(appealsList);
+    //         } catch (error) {
+    //             console.error(error);
+    //             toast.error(getErrorMessage(error));
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
+    //     fetchAppeals();
+    // }, []);
+
+    const {
+        data: appeals = [],
+        isLoading,
+        error,
+    } = useQuery<Appeal[]>({
+        queryKey: ['appeals', 'registrar'],
+        queryFn: () => apiFetch('/registrar/appeals'),
+    });
+
+    if (error) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Failed to load appeals</CardTitle>
+                </CardHeader>
+                <CardContent>{getErrorMessage(error)}</CardContent>
+            </Card>
+        );
+    }
 
     if (isLoading) {
         return (
