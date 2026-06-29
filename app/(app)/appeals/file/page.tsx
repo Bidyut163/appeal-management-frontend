@@ -25,6 +25,9 @@ import { apiFetch } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+type FormData = z.infer<typeof formSchema>;
 
 const formSchema = z
     .object({
@@ -33,6 +36,31 @@ const formSchema = z
     .strict();
 
 export default function FilePage() {
+    const router = useRouter();
+    const queryClient = useQueryClient();
+
+    const createAppealMutation = useMutation({
+        mutationFn: (data: FormData) =>
+            apiFetch('/appeals', {
+                method: 'POST',
+                body: JSON.stringify(data),
+            }),
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: ['appeals'],
+            });
+
+            toast.success('Appeal filed successfully.');
+            router.push('/appeals');
+        },
+
+        onError: (error) => {
+            console.error(error);
+            toast.error(getErrorMessage(error));
+        },
+    });
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -40,23 +68,8 @@ export default function FilePage() {
         },
     });
 
-    const router = useRouter();
-
     async function onSubmit(data: z.infer<typeof formSchema>) {
-        try {
-            // throw new Error('This is a test error');
-
-            await apiFetch('/appeals', {
-                method: 'POST',
-                body: JSON.stringify(data),
-            });
-
-            toast.success('Appeal filed successfully.');
-            router.push('/appeals');
-        } catch (error) {
-            console.error(error);
-            toast.error(getErrorMessage(error));
-        }
+        createAppealMutation.mutate(data);
     }
 
     return (
@@ -97,7 +110,7 @@ export default function FilePage() {
                     <Button
                         className="self-start"
                         type="submit"
-                        disabled={form.formState.isSubmitting}
+                        disabled={createAppealMutation.isPending}
                     >
                         Submit
                     </Button>

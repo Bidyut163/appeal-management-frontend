@@ -29,6 +29,9 @@ import { useRouter } from 'next/navigation';
 import { getDefaultRoute } from '@/utils/getDefaultRoute';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { useMutation } from '@tanstack/react-query';
+
+type LoginInput = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
     email: z.email('Invalid email'),
@@ -36,7 +39,7 @@ const formSchema = z.object({
 });
 
 export default function LoginPage() {
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<LoginInput>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: '',
@@ -47,24 +50,47 @@ export default function LoginPage() {
     const setUser = useAuthStore((state) => state.setUser);
     const router = useRouter();
 
-    async function onSubmit(data: z.infer<typeof formSchema>) {
-        try {
-            const response = await apiFetch('/auth/login', {
+    const loginMutation = useMutation({
+        mutationFn: (data: LoginInput) =>
+            apiFetch('/auth/login', {
                 method: 'POST',
                 body: JSON.stringify(data),
-            });
+            }),
 
-            // console.log(response);
-
+        onSuccess: (response) => {
             setUser(response.user);
 
             toast.success(`Welcome, ${response.user.name}!`);
             // role specific redirects
             router.push(getDefaultRoute(response.user.roles));
-        } catch (error) {
+        },
+
+        onError: (error) => {
             console.error(error);
             toast.error(getErrorMessage(error));
-        }
+        },
+    });
+
+    function onSubmit(data: z.infer<typeof formSchema>) {
+        // try {
+        //     const response = await apiFetch('/auth/login', {
+        //         method: 'POST',
+        //         body: JSON.stringify(data),
+        //     });
+
+        //     // console.log(response);
+
+        //     setUser(response.user);
+
+        //     toast.success(`Welcome, ${response.user.name}!`);
+        //     // role specific redirects
+        //     router.push(getDefaultRoute(response.user.roles));
+        // } catch (error) {
+        //     console.error(error);
+        //     toast.error(getErrorMessage(error));
+        // }
+
+        loginMutation.mutate(data);
     }
 
     return (
@@ -136,14 +162,15 @@ export default function LoginPage() {
                         <Button
                             type="submit"
                             form="login-form"
-                            disabled={form.formState.isSubmitting}
+                            // disabled={form.formState.isSubmitting}
+                            disabled={loginMutation.isPending}
                         >
                             Login
                         </Button>
                     </form>
                 </CardContent>
                 <CardFooter className="justify-between">
-                    <small>Don't have an account?</small>
+                    <small>Don&apos;t have an account?</small>
                     <Button asChild variant="outline" size="sm">
                         <Link href="/signup">Sign up</Link>
                     </Button>

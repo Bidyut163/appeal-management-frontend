@@ -19,7 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { apiFetch } from '@/lib/api';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { use, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -38,6 +38,8 @@ type AppealDetail = {
     description: string;
 };
 
+type FormData = z.infer<typeof formSchema>;
+
 const formSchema = z.object({
     verifierComment: z.string().trim().min(1, 'Verifier comment required'),
 });
@@ -46,8 +48,7 @@ export default function VerifierAppealDetailPage(props: Props) {
     const { id } = use(props.params);
     const router = useRouter();
 
-    // const [appeal, setAppeal] = useState<AppealDetail | null>(null);
-    // const [isLoading, setIsLoading] = useState(true);
+    const queryClient = useQueryClient();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -67,41 +68,70 @@ export default function VerifierAppealDetailPage(props: Props) {
         }
     };
 
-    async function onSubmit(data: z.infer<typeof formSchema>) {
-        try {
-            // throw new Error('This is a test error');
-
-            await apiFetch(`/verifier/appeals/${id}/verify`, {
+    const verifyAppealMutation = useMutation({
+        mutationFn: (data: FormData) =>
+            apiFetch(`/verifier/appeals/${id}/verify`, {
                 method: 'PATCH',
                 body: JSON.stringify(data),
-            });
+            }),
+
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: ['appeals', 'verifier'],
+                }),
+
+                queryClient.invalidateQueries({
+                    queryKey: ['appeals', 'registrar'],
+                }),
+            ]);
 
             setIsDialogOpen(false);
-
-            // toast success message
             toast.success('Appeal forwarded to registrar.');
             router.push('/verifier');
-        } catch (error) {
+        },
+
+        onError: (error) => {
             console.error(error);
             toast.error(getErrorMessage(error));
-        }
+        },
+    });
+
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        // try {
+        //     // throw new Error('This is a test error');
+
+        //     await apiFetch(`/verifier/appeals/${id}/verify`, {
+        //         method: 'PATCH',
+        //         body: JSON.stringify(data),
+        //     });
+
+        //     setIsDialogOpen(false);
+
+        //     await Promise.all([
+        //         queryClient.invalidateQueries({
+        //             queryKey: ['appeal', 'verifier', id],
+        //         }),
+
+        //         queryClient.invalidateQueries({
+        //             queryKey: ['appeals', 'verifier'],
+        //         }),
+
+        //         queryClient.invalidateQueries({
+        //             queryKey: ['appeals', 'registrar'],
+        //         }),
+        //     ]);
+
+        //     // toast success message
+        //     toast.success('Appeal forwarded to registrar.');
+        //     router.push('/verifier');
+        // } catch (error) {
+        //     console.error(error);
+        //     toast.error(getErrorMessage(error));
+        // }
+
+        verifyAppealMutation.mutate(data);
     }
-
-    // useEffect(() => {
-    //     const fetchAppeal = async () => {
-    //         try {
-    //             const appeal = await apiFetch(`/verifier/appeals/${id}`);
-    //             setAppeal(appeal);
-    //         } catch (error) {
-    //             console.error(error);
-    //             toast.error(getErrorMessage(error));
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     };
-
-    //     fetchAppeal();
-    // }, [id]);
 
     const {
         data: appeal,
@@ -225,7 +255,10 @@ export default function VerifierAppealDetailPage(props: Props) {
                                         type="button"
                                         form="verifier-form"
                                         onClick={form.handleSubmit(onSubmit)}
-                                        disabled={form.formState.isSubmitting}
+                                        // disabled={form.formState.isSubmitting}
+                                        disabled={
+                                            verifyAppealMutation.isPending
+                                        }
                                     >
                                         Confirm & Forward
                                     </Button>

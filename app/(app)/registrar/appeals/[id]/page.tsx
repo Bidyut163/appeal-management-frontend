@@ -38,7 +38,7 @@ import * as z from 'zod';
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface Props {
     params: Promise<{
@@ -55,8 +55,9 @@ type AppealDetail = {
     } | null;
 };
 
+type CreateChecklistInput = z.infer<typeof formSchema>;
 type SendToHearningInput = z.input<typeof formSchema2>;
-type SendToHearningOutput = z.input<typeof formSchema2>;
+type SendToHearningOutput = z.output<typeof formSchema2>;
 
 const formSchema = z.object({
     complaintNumber: z.string().min(1, 'Complaint number is required'),
@@ -118,72 +119,152 @@ export default function RegistrarAppealDetailPage(props: Props) {
         }
     };
 
-    async function onSubmit(data: z.infer<typeof formSchema>) {
-        try {
-            // throw new Error('This is a test checklist error');
-
-            await apiFetch(`/registrar/appeals/${id}/checklist`, {
+    const createChecklistMutation = useMutation({
+        mutationFn: (data: CreateChecklistInput) =>
+            apiFetch(`/registrar/appeals/${id}/checklist`, {
                 method: 'POST',
                 body: JSON.stringify(data),
-            });
+            }),
 
-            // setAppeal((prev) =>
-            //     prev
-            //         ? {
-            //               ...prev,
-            //               appealChecklist: checklist,
-            //           }
-            //         : prev,
-            // );
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: ['appeal', 'registrar', id],
+                }),
 
-            await queryClient.invalidateQueries({
-                queryKey: ['appeal', 'registrar', id],
-            });
+                queryClient.invalidateQueries({
+                    queryKey: ['appeals', 'registrar'],
+                }),
+            ]);
+
+            // toast success message
+            toast.success('Checklist created successfully.');
+        },
+
+        onError: (error) => {
+            console.error(error);
+            toast.error(getErrorMessage(error));
+        },
+    });
+
+    const sendToHearingMutation = useMutation({
+        mutationFn: (data: SendToHearningOutput) =>
+            apiFetch(`/registrar/appeals/${id}/send-to-hearing`, {
+                method: 'PATCH',
+                body: JSON.stringify(data),
+            }),
+
+        onSuccess: async () => {
+            setIsDialogOpen(false);
 
             await queryClient.invalidateQueries({
                 queryKey: ['appeals', 'registrar'],
             });
 
             // toast success message
-            toast.success('Checklist created successfully.');
-        } catch (error) {
-            console.error(error);
-            toast.error(getErrorMessage(error));
-        }
-    }
-
-    async function onHearingSubmit(data: SendToHearningOutput) {
-        try {
-            await apiFetch(`/registrar/appeals/${id}/send-to-hearing`, {
-                method: 'PATCH',
-                body: JSON.stringify(data),
-            });
-
-            setIsDialogOpen(false);
-
-            // toast success message
             toast.success('Appeal sent to hearing.');
             router.push('/registrar');
-        } catch (error) {
+        },
+
+        onError: (error) => {
             console.error(error);
             toast.error(getErrorMessage(error));
-        }
-    }
+        },
+    });
 
-    async function onRevert(data: z.infer<typeof formSchema3>) {
-        try {
-            await apiFetch(`/registrar/appeals/${id}/revert`, {
+    const revertAppealMutation = useMutation({
+        mutationFn: (data: z.infer<typeof formSchema3>) =>
+            apiFetch(`/registrar/appeals/${id}/revert`, {
                 method: 'PATCH',
                 body: JSON.stringify(data),
+            }),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: ['appeals', 'registrar'],
             });
 
             // toast success message - add later
             toast.success('Appeal reverted to appellant.');
             router.push('/registrar');
-        } catch (error) {
+        },
+
+        onError: (error) => {
             console.error(error);
             toast.error(getErrorMessage(error));
-        }
+        },
+    });
+
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        // try {
+        //     // throw new Error('This is a test checklist error');
+
+        //     await apiFetch(`/registrar/appeals/${id}/checklist`, {
+        //         method: 'POST',
+        //         body: JSON.stringify(data),
+        //     });
+
+        //     // setAppeal((prev) =>
+        //     //     prev
+        //     //         ? {
+        //     //               ...prev,
+        //     //               appealChecklist: checklist,
+        //     //           }
+        //     //         : prev,
+        //     // );
+
+        //     await queryClient.invalidateQueries({
+        //         queryKey: ['appeal', 'registrar', id],
+        //     });
+
+        //     await queryClient.invalidateQueries({
+        //         queryKey: ['appeals', 'registrar'],
+        //     });
+
+        //     // toast success message
+        //     toast.success('Checklist created successfully.');
+        // } catch (error) {
+        //     console.error(error);
+        //     toast.error(getErrorMessage(error));
+        // }
+
+        createChecklistMutation.mutate(data);
+    }
+
+    async function onHearingSubmit(data: SendToHearningOutput) {
+        // try {
+        //     await apiFetch(`/registrar/appeals/${id}/send-to-hearing`, {
+        //         method: 'PATCH',
+        //         body: JSON.stringify(data),
+        //     });
+
+        //     setIsDialogOpen(false);
+
+        //     // toast success message
+        //     toast.success('Appeal sent to hearing.');
+        //     router.push('/registrar');
+        // } catch (error) {
+        //     console.error(error);
+        //     toast.error(getErrorMessage(error));
+        // }
+        sendToHearingMutation.mutate(data);
+    }
+
+    async function onRevert(data: z.infer<typeof formSchema3>) {
+        // try {
+        //     await apiFetch(`/registrar/appeals/${id}/revert`, {
+        //         method: 'PATCH',
+        //         body: JSON.stringify(data),
+        //     });
+
+        //     // toast success message - add later
+        //     toast.success('Appeal reverted to appellant.');
+        //     router.push('/registrar');
+        // } catch (error) {
+        //     console.error(error);
+        //     toast.error(getErrorMessage(error));
+        // }
+
+        revertAppealMutation.mutate(data);
     }
 
     // useEffect(() => {
@@ -328,7 +409,10 @@ export default function RegistrarAppealDetailPage(props: Props) {
                                     <Button
                                         type="submit"
                                         form="revert-back-form"
-                                        disabled={form3.formState.isSubmitting}
+                                        // disabled={form3.formState.isSubmitting}
+                                        disabled={
+                                            revertAppealMutation.isPending
+                                        }
                                     >
                                         Revert back to appellant
                                     </Button>
@@ -411,7 +495,8 @@ export default function RegistrarAppealDetailPage(props: Props) {
                             <Button
                                 type="submit"
                                 form="checklist-form"
-                                disabled={form.formState.isSubmitting}
+                                // disabled={form.formState.isSubmitting}
+                                disabled={createChecklistMutation.isPending}
                                 className="self-start"
                             >
                                 Submit checklist
@@ -542,8 +627,11 @@ export default function RegistrarAppealDetailPage(props: Props) {
                                             onClick={form2.handleSubmit(
                                                 onHearingSubmit,
                                             )}
+                                            // disabled={
+                                            //     form2.formState.isSubmitting
+                                            // }
                                             disabled={
-                                                form2.formState.isSubmitting
+                                                sendToHearingMutation.isPending
                                             }
                                         >
                                             Confirm & Send to hearing
