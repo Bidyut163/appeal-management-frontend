@@ -8,33 +8,16 @@ import { apiFetch } from '@/lib/api';
 
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 
 export default function VerifierPage() {
-    // const [appeals, setAppeals] = useState<Appeal[]>([]);
-    // const [isLoading, setIsLoading] = useState(true);
-
-    // useEffect(() => {
-    //     const fetchAppeals = async () => {
-    //         try {
-    //             const appealsList = await apiFetch('/verifier/appeals');
-
-    //             setAppeals(appealsList);
-    //         } catch (error) {
-    //             console.error(error);
-    //             toast.error(getErrorMessage(error));
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     };
-    //     fetchAppeals();
-    // }, []);
-
     const {
         data: appeals = [],
         isLoading,
         error,
     } = useQuery<Appeal[]>({
-        queryKey: ['appeals', 'verifier'],
+        // queryKey: ['appeals', 'verifier'],
+        queryKey: queryKeys.verifierAppeals,
         queryFn: () => apiFetch('/verifier/appeals'),
     });
 

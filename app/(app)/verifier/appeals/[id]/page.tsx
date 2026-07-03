@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import { apiFetch } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -78,11 +79,13 @@ export default function VerifierAppealDetailPage(props: Props) {
         onSuccess: async () => {
             await Promise.all([
                 queryClient.invalidateQueries({
-                    queryKey: ['appeals', 'verifier'],
+                    // queryKey: ['appeals', 'verifier'],
+                    queryKey: queryKeys.verifierAppeals,
                 }),
 
                 queryClient.invalidateQueries({
-                    queryKey: ['appeals', 'registrar'],
+                    // queryKey: ['appeals', 'registrar'],
+                    queryKey: queryKeys.registrarAppeals,
                 }),
             ]);
 
@@ -98,38 +101,6 @@ export default function VerifierAppealDetailPage(props: Props) {
     });
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
-        // try {
-        //     // throw new Error('This is a test error');
-
-        //     await apiFetch(`/verifier/appeals/${id}/verify`, {
-        //         method: 'PATCH',
-        //         body: JSON.stringify(data),
-        //     });
-
-        //     setIsDialogOpen(false);
-
-        //     await Promise.all([
-        //         queryClient.invalidateQueries({
-        //             queryKey: ['appeal', 'verifier', id],
-        //         }),
-
-        //         queryClient.invalidateQueries({
-        //             queryKey: ['appeals', 'verifier'],
-        //         }),
-
-        //         queryClient.invalidateQueries({
-        //             queryKey: ['appeals', 'registrar'],
-        //         }),
-        //     ]);
-
-        //     // toast success message
-        //     toast.success('Appeal forwarded to registrar.');
-        //     router.push('/verifier');
-        // } catch (error) {
-        //     console.error(error);
-        //     toast.error(getErrorMessage(error));
-        // }
-
         verifyAppealMutation.mutate(data);
     }
 
@@ -138,7 +109,8 @@ export default function VerifierAppealDetailPage(props: Props) {
         isLoading,
         error,
     } = useQuery<AppealDetail | null>({
-        queryKey: ['appeal', 'verifier', id],
+        // queryKey: ['appeal', 'verifier', id],
+        queryKey: queryKeys.verifierAppeal(id),
         queryFn: () => apiFetch(`/verifier/appeals/${id}`),
     });
 

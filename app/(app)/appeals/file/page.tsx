@@ -26,6 +26,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -48,7 +49,7 @@ export default function FilePage() {
 
         onSuccess: async () => {
             await queryClient.invalidateQueries({
-                queryKey: ['appeals'],
+                queryKey: queryKeys.appeals,
             });
 
             toast.success('Appeal filed successfully.');

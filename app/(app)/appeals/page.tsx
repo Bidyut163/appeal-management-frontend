@@ -10,6 +10,7 @@ import Link from 'next/link';
 
 import { useQuery } from '@tanstack/react-query';
 import { getErrorMessage } from '@/utils/getErrorMessage';
+import { queryKeys } from '@/lib/queryKeys';
 
 // const appeals: Appeal[] = [
 //     {
@@ -23,32 +24,12 @@ import { getErrorMessage } from '@/utils/getErrorMessage';
 // ];
 
 export default function AppealsPage() {
-    // const [appeals, setAppeals] = useState<Appeal[]>([]);
-    // const [isLoading, setIsLoading] = useState(true);
-
-    // useEffect(() => {
-    //     const getAllAppeals = async () => {
-    //         try {
-    //             const appealsList = await apiFetch('/appeals');
-    //             setAppeals(appealsList);
-    //             // console.log(appealsList);
-    //         } catch (error) {
-    //             console.error(error);
-    //             toast.error(getErrorMessage(error));
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     };
-
-    //     getAllAppeals();
-    // }, []);
-
     const {
         data: appeals = [],
         isLoading,
         error,
     } = useQuery<Appeal[]>({
-        queryKey: ['appeals'],
+        queryKey: queryKeys.appeals,
         queryFn: () => apiFetch('/appeals'),
     });
 

@@ -72,24 +72,6 @@ export default function LoginPage() {
     });
 
     function onSubmit(data: z.infer<typeof formSchema>) {
-        // try {
-        //     const response = await apiFetch('/auth/login', {
-        //         method: 'POST',
-        //         body: JSON.stringify(data),
-        //     });
-
-        //     // console.log(response);
-
-        //     setUser(response.user);
-
-        //     toast.success(`Welcome, ${response.user.name}!`);
-        //     // role specific redirects
-        //     router.push(getDefaultRoute(response.user.roles));
-        // } catch (error) {
-        //     console.error(error);
-        //     toast.error(getErrorMessage(error));
-        // }
-
         loginMutation.mutate(data);
     }
 

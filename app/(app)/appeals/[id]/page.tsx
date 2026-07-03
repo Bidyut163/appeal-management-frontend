@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiFetch } from '@/lib/api';
+import { queryKeys } from '@/lib/queryKeys';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useQuery } from '@tanstack/react-query';
 
@@ -152,7 +153,8 @@ export default function AppealDetailPage(props: Props) {
         isLoading,
         error,
     } = useQuery<AppealDetail | null>({
-        queryKey: ['appeal', id],
+        // queryKey: ['appeal', id],
+        queryKey: queryKeys.appeal(id),
         queryFn: () => apiFetch(`/appeals/${id}`),
     });
     // const {
