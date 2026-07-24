@@ -8,18 +8,10 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
-import * as z from 'zod';
+import { FieldGroup } from '@/components/ui/field';
 
-import {
-    Field,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-} from '@/components/ui/field';
-
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { apiFetch } from '@/lib/api';
 import { useRouter } from 'next/navigation';
@@ -28,20 +20,17 @@ import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 
-type FormData = z.infer<typeof formSchema>;
-
-const formSchema = z
-    .object({
-        description: z.string().trim().min(1, 'Description is required'),
-    })
-    .strict();
+import { AppellantSection } from './AppellantSection';
+import { FormInput, formSchema } from './schemas';
+import RespondentSection from './RespondentSection';
+import { AppealDetailsSection } from './AppealDetailsSection';
 
 export default function FilePage() {
     const router = useRouter();
     const queryClient = useQueryClient();
 
     const createAppealMutation = useMutation({
-        mutationFn: (data: FormData) =>
+        mutationFn: (data: FormInput) =>
             apiFetch('/appeals', {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -62,22 +51,86 @@ export default function FilePage() {
         },
     });
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<FormInput>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            description: '',
+            // ============Appellant========
+            appellantName: '',
+
+            appellantResidentialAddressLine1: '',
+            appellantResidentialAddressLine2: '',
+            appellantResidentialLandmark: '',
+            appellantResidentialCity: '',
+            appellantResidentialDistrict: '',
+            appellantResidentialState: '',
+            appellantResidentialCountry: 'India',
+            appellantResidentialPinCode: '',
+
+            appellantServiceAddressLine1: '',
+            appellantServiceAddressLine2: '',
+            appellantServiceLandmark: '',
+            appellantServiceCity: '',
+            appellantServiceDistrict: '',
+            appellantServiceState: '',
+            appellantServiceCountry: 'India',
+            appellantServicePinCode: '',
+
+            appellantMobileNumber: '',
+            appellantEmailAddress: '',
+
+            // ==========Respondent===========
+
+            respondentName: '',
+
+            respondentOfficeAddressLine1: '',
+            respondentOfficeAddressLine2: '',
+            respondentOfficeLandmark: '',
+            respondentOfficeCity: '',
+            respondentOfficeDistrict: '',
+            respondentOfficeState: '',
+            respondentOfficeCountry: 'India',
+            respondentOfficePinCode: '',
+
+            respondentServiceAddressLine1: '',
+            respondentServiceAddressLine2: '',
+            respondentServiceLandmark: '',
+            respondentServiceCity: '',
+            respondentServiceDistrict: '',
+            respondentServiceState: '',
+            respondentServiceCountry: 'India',
+            respondentServicePinCode: '',
+
+            respondentMobileNumber: '',
+            respondentEmailAddress: '',
+
+            // -----------------Appeal Details---------------
+            projectRegistrationNumber: '',
+            isFiledWithinLimitation: false,
+            delayReason: '',
+            factsOfCase: '',
+            groundsOfAppeal: '',
+            reliefSought: '',
+            interimReliefRequested: '',
+            isMatterPendingInCourt: false,
         },
     });
 
-    async function onSubmit(data: z.infer<typeof formSchema>) {
-        createAppealMutation.mutate(data);
+    async function onSubmit(data: FormInput) {
+        const payload = {
+            ...data,
+            appellantMobileNumber: `+91${data.appellantMobileNumber}`,
+            respondentMobileNumber: `+91${data.respondentMobileNumber}`,
+        };
+        createAppealMutation.mutate(payload);
     }
 
     return (
         <Card className="max-w-3xl">
             <CardHeader>
-                <CardTitle>File Appeal</CardTitle>
-                <CardDescription>Fill out the following form</CardDescription>
+                <CardTitle>File Appeal(Form C)</CardTitle>
+                <CardDescription>
+                    Fill out the following form C to registar an appeal
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <form
@@ -85,28 +138,9 @@ export default function FilePage() {
                     className="flex flex-col gap-4"
                 >
                     <FieldGroup>
-                        <Controller
-                            name="description"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="description">
-                                        Description
-                                    </FieldLabel>
-                                    <Textarea
-                                        {...field}
-                                        id="description"
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="Description"
-                                    />
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
-                                    )}
-                                </Field>
-                            )}
-                        />
+                        <AppellantSection form={form} />
+                        <RespondentSection form={form} />
+                        <AppealDetailsSection form={form} />
                     </FieldGroup>
                     <Button
                         className="self-start"
