@@ -24,17 +24,177 @@ import { AppellantSection } from './AppellantSection';
 import { FormInput, formSchema } from './schemas';
 import RespondentSection from './RespondentSection';
 import { AppealDetailsSection } from './AppealDetailsSection';
+import { AppealDocumentSection } from './AppealDocumentSection';
 
 export default function FilePage() {
     const router = useRouter();
     const queryClient = useQueryClient();
 
+    const submitAppeal = (data: FormInput) => {
+        const formData = new FormData();
+
+        formData.append('appellantName', data.appellantName);
+        //
+        formData.append(
+            'appellantResidentialAddressLine1',
+            data.appellantResidentialAddressLine1,
+        );
+        formData.append(
+            'appellantResidentialAddressLine2',
+            data.appellantResidentialAddressLine2 ?? '',
+        );
+        formData.append(
+            'appellantResidentialLandmark',
+            data.appellantResidentialLandmark ?? '',
+        );
+        formData.append(
+            'appellantResidentialCity',
+            data.appellantResidentialCity,
+        );
+        formData.append(
+            'appellantResidentialDistrict',
+            data.appellantResidentialDistrict,
+        );
+        formData.append(
+            'appellantResidentialState',
+            data.appellantResidentialState,
+        );
+        formData.append(
+            'appellantResidentialCountry',
+            data.appellantResidentialCountry,
+        );
+        formData.append(
+            'appellantResidentialPinCode',
+            data.appellantResidentialPinCode,
+        );
+        //
+        formData.append(
+            'appellantServiceAddressLine1',
+            data.appellantServiceAddressLine1,
+        );
+        formData.append(
+            'appellantServiceAddressLine2',
+            data.appellantServiceAddressLine2 ?? '',
+        );
+        formData.append(
+            'appellantServiceLandmark',
+            data.appellantServiceLandmark ?? '',
+        );
+        formData.append('appellantServiceCity', data.appellantServiceCity);
+        formData.append(
+            'appellantServiceDistrict',
+            data.appellantServiceDistrict,
+        );
+        formData.append('appellantServiceState', data.appellantServiceState);
+        formData.append(
+            'appellantServiceCountry',
+            data.appellantServiceCountry,
+        );
+        formData.append(
+            'appellantServicePinCode',
+            data.appellantServicePinCode,
+        );
+        //
+        formData.append('appellantMobileNumber', data.appellantMobileNumber);
+        formData.append('appellantEmailAddress', data.appellantEmailAddress);
+        //
+        formData.append('respondentName', data.respondentName);
+        //
+        formData.append(
+            'respondentOfficeAddressLine1',
+            data.respondentOfficeAddressLine1,
+        );
+        formData.append(
+            'respondentOfficeAddressLine2',
+            data.respondentOfficeAddressLine2 ?? '',
+        );
+        formData.append(
+            'respondentOfficeLandmark',
+            data.respondentOfficeLandmark ?? '',
+        );
+        formData.append('respondentOfficeCity', data.respondentOfficeCity);
+        formData.append(
+            'respondentOfficeDistrict',
+            data.respondentOfficeDistrict,
+        );
+        formData.append('respondentOfficeState', data.respondentOfficeState);
+        formData.append(
+            'respondentOfficeCountry',
+            data.respondentOfficeCountry,
+        );
+        formData.append(
+            'respondentOfficePinCode',
+            data.respondentOfficePinCode,
+        );
+        //
+        formData.append(
+            'respondentServiceAddressLine1',
+            data.respondentServiceAddressLine1,
+        );
+        formData.append(
+            'respondentServiceAddressLine2',
+            data.respondentServiceAddressLine2 ?? '',
+        );
+        formData.append(
+            'respondentServiceLandmark',
+            data.respondentServiceLandmark ?? '',
+        );
+        formData.append('respondentServiceCity', data.respondentServiceCity);
+        formData.append(
+            'respondentServiceDistrict',
+            data.respondentServiceDistrict,
+        );
+        formData.append('respondentServiceState', data.respondentServiceState);
+        formData.append(
+            'respondentServiceCountry',
+            data.respondentServiceCountry,
+        );
+        formData.append(
+            'respondentServicePinCode',
+            data.respondentServicePinCode,
+        );
+        //
+        formData.append('respondentMobileNumber', data.respondentMobileNumber);
+        formData.append('respondentEmailAddress', data.respondentEmailAddress);
+        //
+        formData.append(
+            'projectRegistrationNumber',
+            data.projectRegistrationNumber ?? '',
+        );
+        formData.append(
+            'isFiledWithinLimitation',
+            String(data.isFiledWithinLimitation),
+        );
+        formData.append('delayReason', data.delayReason ?? '');
+        formData.append('factsOfCase', data.factsOfCase);
+        formData.append('groundsOfAppeal', data.groundsOfAppeal);
+        formData.append('reliefSought', data.reliefSought);
+        formData.append(
+            'interimReliefRequested',
+            data.interimReliefRequested ?? '',
+        );
+        formData.append(
+            'isMatterPendingInCourt',
+            String(data.isMatterPendingInCourt),
+        );
+
+        // Object.entries(data).forEach(([key, value]) => {
+        //     if (key === 'appealDocument') return;
+
+        //     formData.append(key, String(value ?? ''));
+        // });
+
+        // ----------------------------------------------------------
+        formData.append('appealDocument', data.appealDocument);
+
+        return apiFetch('/appeals', {
+            method: 'POST',
+            body: formData,
+        });
+    };
+
     const createAppealMutation = useMutation({
-        mutationFn: (data: FormInput) =>
-            apiFetch('/appeals', {
-                method: 'POST',
-                body: JSON.stringify(data),
-            }),
+        mutationFn: (data: FormInput) => submitAppeal(data),
 
         onSuccess: async () => {
             await queryClient.invalidateQueries({
@@ -112,6 +272,9 @@ export default function FilePage() {
             reliefSought: '',
             interimReliefRequested: '',
             isMatterPendingInCourt: false,
+
+            // -----------------Appeal Documents--------------
+            appealDocument: undefined,
         },
     });
 
@@ -141,6 +304,7 @@ export default function FilePage() {
                         <AppellantSection form={form} />
                         <RespondentSection form={form} />
                         <AppealDetailsSection form={form} />
+                        <AppealDocumentSection form={form} />
                     </FieldGroup>
                     <Button
                         className="self-start"

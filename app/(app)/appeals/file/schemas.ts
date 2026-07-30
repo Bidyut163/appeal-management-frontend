@@ -1,5 +1,9 @@
 import * as z from 'zod';
 
+export const MAX_APPEAL_FILE_SIZE = 10 * 1024 * 1024;
+
+export const ALLOWED_APPEAL_FILE_TYPES = ['application/pdf'];
+
 export const formSchema = z
     .object({
         // -------------Appellant------------
@@ -152,6 +156,20 @@ export const formSchema = z
         reliefSought: z.string().trim().min(1, 'Relief sought is required'),
         interimReliefRequested: z.string().trim().optional(),
         isMatterPendingInCourt: z.boolean(),
+
+        // --------------Appeal Documents------------------
+        appealDocument: z
+            .instanceof(File, {
+                message: 'Please select a PDF document.',
+            })
+            .refine(
+                (file) => file.size <= MAX_APPEAL_FILE_SIZE,
+                'Maximum file size is 10 MB.',
+            )
+            .refine(
+                (file) => ALLOWED_APPEAL_FILE_TYPES.includes(file.type),
+                'Only PDF files are allowed.',
+            ),
     })
     .superRefine((data, ctx) => {
         if (!data.isFiledWithinLimitation && !data.delayReason?.trim()) {
