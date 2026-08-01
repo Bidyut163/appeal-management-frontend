@@ -2,6 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatDate } from '@/utils/formatDate';
 import { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 
@@ -9,9 +10,9 @@ import Link from 'next/link';
 // You can use a Zod schema here if you want.
 export type Appeal = {
     id: number;
-    // appellant: string;
-    // respondent: string;
-    description: string;
+    appellantName: string;
+    respondentName: string;
+    createdAt: string;
     // payment_status: 'pending' | 'success' | 'failed';
     status:
         | 'DRAFT'
@@ -70,17 +71,18 @@ export const columns: ColumnDef<Appeal>[] = [
         accessorKey: 'id',
         header: 'Appeal ID',
     },
-    // {
-    //     accessorKey: 'appellant',
-    //     header: 'Appellant Name',
-    // },
-    // {
-    //     accessorKey: 'respondent',
-    //     header: 'Respondent Name',
-    // },
     {
-        accessorKey: 'description',
-        header: 'Description',
+        accessorKey: 'appellantName',
+        header: 'Appellant Name',
+    },
+    {
+        accessorKey: 'respondentName',
+        header: 'Respondent Name',
+    },
+    {
+        accessorKey: 'createdAt',
+        header: 'Filed On',
+        cell: ({ row }) => formatDate(row.original.createdAt),
     },
 
     // {

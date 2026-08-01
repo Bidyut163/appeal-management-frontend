@@ -15,13 +15,13 @@ export default function AppealsLayout({
 
     const user = useAuthStore((state) => state.user);
 
-    const isAppellant = user?.roles.includes(ROLES.APPELLANT);
+    const isAppellant = user?.roles.includes(ROLES.APPELLANT) ?? false;
 
     useEffect(() => {
         if (!isAppellant) {
             router.replace('/');
         }
-    }, [user, router]);
+    }, [isAppellant, router]);
 
     if (!isAppellant) return null;
 

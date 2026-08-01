@@ -1,14 +1,14 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiFetch } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useQuery } from '@tanstack/react-query';
 
-import { DownloadIcon } from 'lucide-react';
+// import { DownloadIcon } from 'lucide-react';
 import { use } from 'react';
 
 interface Props {
@@ -17,20 +17,20 @@ interface Props {
     }>;
 }
 
-// function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
-//     return (
-//         <div className="flex py-3 border-b last:border-none">
-//             <span className="w-50 text-muted-foreground">{label}</span>
-//             <span className="font-medium">{value}</span>
-//         </div>
-//     );
-// }
+function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
+    return (
+        <div className="flex py-3 border-b last:border-none">
+            <span className="w-50 text-muted-foreground">{label}</span>
+            <span className="font-medium">{value}</span>
+        </div>
+    );
+}
 
 type Appeal = {
     id: number;
     // appellant: string;
     // respondent: string;
-    description: string;
+    // description: string;
 
     // payment_status: 'pending' | 'success' | 'failed';
     appeal_status:
@@ -44,12 +44,13 @@ type Appeal = {
 };
 type AppealDetail = {
     id: string;
-    // appellant: string;
-    // respondent: string;
+    appellantName: string;
+    respondentName: string;
     // appellant_address: string;
     // respondent_address: string;
-    description: string;
-    // appeal_grounds: string;
+    factsOfCase: string;
+    groundsOfAppeal: string;
+    reliefSought: string;
     // payment_detail: {
     //     order_id: string;
     //     amount: number;
@@ -101,52 +102,8 @@ function formatStatus(status: string) {
     return status.replaceAll('_', ' ');
 }
 
-// async function getAppeal(id: string): Promise<AppealDetail> {
-//     // throw new Error('Failed to fetch appeal');
-
-//     return {
-//         id,
-//         appellant: 'Padum Deuri',
-//         respondent: 'RERA Assam',
-//         appellant_address: 'Generic: 123 Main St, Anytown, USA 12345',
-//         respondent_address:
-//         'Sample Place: 4567 Fake St, Mountain View, CA 94043',
-//         appeal_description:
-//             ' Lorem ipsum dolor sit amet consectetur, adipisicing',
-//         appeal_grounds: ' Lorem ipsum dolor sit amet consectetur, adipisicing',
-//         payment_detail: {
-//             order_id: '8x45tt678',
-//             amount: 1000,
-//             status: 'success',
-//             payment_mode: 'Debit card',
-//         },
-//         appeal_status: 'with_officials',
-//     };
-// }
-
 export default function AppealDetailPage(props: Props) {
     const { id } = use(props.params);
-    // const appeal = await getAppeal(id);
-
-    // const [appeal, setAppeal] = useState<AppealDetail | null>(null);
-    // const [isLoading, setIsLoading] = useState(true);
-
-    // useEffect(() => {
-    //     const fetchAppeal = async () => {
-    //         try {
-    //             const data = await apiFetch(`/appeals/${id}`);
-
-    //             setAppeal(data);
-    //         } catch (error) {
-    //             console.error(error);
-    //             toast.error(getErrorMessage(error));
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     };
-
-    //     fetchAppeal();
-    // }, [id]);
 
     const {
         data: appeal,
@@ -219,22 +176,28 @@ export default function AppealDetailPage(props: Props) {
                         </div>
                     </div>
 
-                    <Button size="sm">
+                    {/* <Button size="sm">
                         <DownloadIcon className="mr-2 h-4 w-4" />
                         Download Receipt
-                    </Button>
+                    </Button> */}
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
                 {/* Parties */}
-                {/* <section className="space-y-2 border-b pb-4 last:border-none">
+                <section className="space-y-2 border-b pb-4 last:border-none">
                     <h2 className="text-base font-semibold text-muted-foreground">
                         Parties
-                    </h2> */}
+                    </h2>
 
-                {/* <InfoRow label="Appellant Name" value={appellant} /> */}
-                {/* <InfoRow label="Respondent Name" value={respondent} /> */}
-                {/* </section> */}
+                    <InfoRow
+                        label="Appellant Name"
+                        value={appeal.appellantName}
+                    />
+                    <InfoRow
+                        label="Respondent Name"
+                        value={appeal.respondentName}
+                    />
+                </section>
 
                 {/* Address */}
                 {/* <section className="space-y-2 border-b pb-4 last:border-none">
@@ -252,21 +215,29 @@ export default function AppealDetailPage(props: Props) {
                     />
                 </section> */}
 
-                {/* Description */}
+                {/* Facts of case */}
                 <section className="space-y-2 border-b pb-4 last:border-none">
                     <h2 className="text-base font-semibold text-muted-foreground">
-                        Description
+                        Facts of case
                     </h2>
-                    <div className="py-2">{appeal.description}</div>
+                    <div className="py-2">{appeal.factsOfCase}</div>
                 </section>
 
                 {/* Grounds of appeal */}
-                {/* <section className="space-y-2 border-b pb-4 last:border-none">
+                <section className="space-y-2 border-b pb-4 last:border-none">
                     <h2 className="text-base font-semibold text-muted-foreground">
                         Grounds of Appeal
                     </h2>
-                    <div className="py-2">{appeal_grounds}</div>
-                </section> */}
+                    <div className="py-2">{appeal.groundsOfAppeal}</div>
+                </section>
+
+                {/* Relief Sought */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Relief(s) sought
+                    </h2>
+                    <div className="py-2">{appeal.reliefSought}</div>
+                </section>
                 {/* Payment */}
                 {/* <section className="space-y-2 border-b pb-4 last:border-none">
                     <h2 className="text-base font-semibold text-muted-foreground">
