@@ -15,6 +15,19 @@ import Script from 'next/script';
 
 import { use } from 'react';
 import { toast } from 'sonner';
+import {
+    CreateOrderResponse,
+    FailedPaymentRequest,
+    RazorpayFailureResponse,
+    RazorpaySuccessResponse,
+    VerifyPaymentRequest,
+} from './types';
+import {
+    type AppealStatus,
+    formatStatus,
+    getAppealStatusVariant,
+} from '@/utils/appealStatus';
+import InfoRow from './InfoRow';
 
 interface Props {
     params: Promise<{
@@ -26,98 +39,10 @@ type AppealDetail = {
     id: string;
     appellantName: string;
     respondentName: string;
-    status: Appeal['appeal_status'];
+    appellantEmailAddress: string;
+    appellantMobileNumber: string;
+    status: AppealStatus;
 };
-
-type Appeal = {
-    id: number;
-    appeal_status:
-        | 'DRAFT'
-        | 'UNDER_VERIFICATION'
-        | 'WITH_REGISTRAR'
-        | 'REVERTED_TO_APPELLANT'
-        | 'UNDER_HEARING'
-        | 'DISPOSED'
-        | 'REJECTED';
-};
-
-type CreateOrderResponse = {
-    key: string;
-    orderId: string;
-    amount: number;
-    currency: string;
-};
-
-type RazorpaySuccessResponse = {
-    razorpay_payment_id: string;
-    razorpay_order_id: string;
-    razorpay_signature: string;
-};
-
-type RazorpayFailureResponse = {
-    error: {
-        code: string;
-        description: string;
-        source: string;
-        step: string;
-        reason: string;
-        metadata: {
-            order_id: string;
-            payment_id: string;
-        };
-    };
-};
-
-type VerifyPaymentRequest = {
-    appealId: number;
-    razorpayPaymentId: string;
-    razorpayOrderId: string;
-    razorpaySignature: string;
-};
-
-type FailedPaymentRequest = {
-    appealId: number;
-    razorpayOrderId: string;
-    razorpayPaymentId: string;
-    razorpayErrorCode: string;
-    razorpayErrorDescription: string;
-};
-
-function getAppealStatusVariant(
-    status: Appeal['appeal_status'],
-): 'success' | 'pending' | 'default' | 'failed' {
-    switch (status) {
-        case 'DRAFT':
-            return 'pending';
-        case 'UNDER_VERIFICATION':
-            return 'default';
-        case 'WITH_REGISTRAR':
-            return 'default';
-        case 'REVERTED_TO_APPELLANT':
-            return 'default';
-        case 'UNDER_HEARING':
-            return 'success';
-        case 'DISPOSED':
-            return 'success';
-        case 'REJECTED':
-            return 'failed';
-        default:
-            return 'pending';
-    }
-}
-
-function formatStatus(status: string) {
-    return status.replaceAll('_', ' ');
-}
-
-function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
-    return (
-        <div className="flex py-3 border-b last:border-none">
-            <span className="w-50 text-muted-foreground">{label}</span>
-            <span className="font-medium">{value}</span>
-        </div>
-    );
-}
 
 export default function PaymentPage(props: Props) {
     const { id } = use(props.params);
@@ -135,11 +60,11 @@ export default function PaymentPage(props: Props) {
             currency: order.currency,
             order_id: order.orderId,
 
-            name: 'Assam Reat',
+            name: 'Assam REAT',
 
             description: 'Appeal Filing Fee',
 
-            handler: async (response: RazorpaySuccessResponse) => {
+            handler: (response: RazorpaySuccessResponse) => {
                 // console.log(response);
                 const payload = {
                     appealId: Number(id),
@@ -158,6 +83,8 @@ export default function PaymentPage(props: Props) {
 
             prefill: {
                 name: appeal?.appellantName,
+                email: appeal?.appellantEmailAddress,
+                contact: appeal?.appellantMobileNumber,
             },
 
             theme: {
@@ -350,7 +277,8 @@ export default function PaymentPage(props: Props) {
                             className="mt-4 cursor-pointer"
                             disabled={
                                 createOrderMutation.isPending ||
-                                verifyPaymentMutation.isPending
+                                verifyPaymentMutation.isPending ||
+                                failedPaymentMutation.isPending
                             }
                             onClick={() => handlePayNow(appeal.id)}
                         >
