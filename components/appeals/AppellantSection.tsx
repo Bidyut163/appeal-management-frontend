@@ -7,74 +7,77 @@ import {
 
 import { Controller, UseFormReturn } from 'react-hook-form';
 
-import { FormInput } from './schemas';
+import { FormInput } from '@/app/(app)/appeals/file/schemas';
 
 import { Input } from '@/components/ui/input';
 
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 
-interface RespondentSectionProps {
+interface AppellantSectionProps {
     form: UseFormReturn<FormInput>;
 }
 
-const RespondentSection = ({ form }: RespondentSectionProps) => {
-    const [isRespondentServiceAddressSame, setIsRespondentServiceAddressSame] =
+export const AppellantSection = ({ form }: AppellantSectionProps) => {
+    const [isAppellantServiceAddressSame, setIsAppellantServiceAddressSame] =
         useState(false);
 
-    const copyOfficeToServiceAddress = () => {
+    const copyResidentialToServiceAddress = () => {
         const values = form.getValues();
         form.setValue(
-            'respondentServiceAddressLine1',
-            values.respondentOfficeAddressLine1,
+            'appellantServiceAddressLine1',
+            values.appellantResidentialAddressLine1,
         );
 
         form.setValue(
-            'respondentServiceAddressLine2',
-            values.respondentOfficeAddressLine2,
+            'appellantServiceAddressLine2',
+            values.appellantResidentialAddressLine2,
         );
 
         form.setValue(
-            'respondentServiceCountry',
-            values.respondentOfficeCountry,
+            'appellantServiceCountry',
+            values.appellantResidentialCountry,
         );
 
-        form.setValue('respondentServiceState', values.respondentOfficeState);
-
         form.setValue(
-            'respondentServiceDistrict',
-            values.respondentOfficeDistrict,
+            'appellantServiceState',
+            values.appellantResidentialState,
         );
 
-        form.setValue('respondentServiceCity', values.respondentOfficeCity);
         form.setValue(
-            'respondentServiceLandmark',
-            values.respondentOfficeLandmark,
+            'appellantServiceDistrict',
+            values.appellantResidentialDistrict,
+        );
+
+        form.setValue('appellantServiceCity', values.appellantResidentialCity);
+        form.setValue(
+            'appellantServiceLandmark',
+            values.appellantResidentialLandmark,
         );
         form.setValue(
-            'respondentServicePinCode',
-            values.respondentOfficePinCode,
+            'appellantServicePinCode',
+            values.appellantResidentialPinCode,
         );
     };
+
     return (
         <>
-            <hr />
-            <h6>2. Particulars of the Respondent</h6>
+            <h6>1. Particulars of the Appellant</h6>
 
             <Controller
-                name="respondentName"
+                name="appellantName"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="respondentName">
-                            Name of the Respondent
+                        <FieldLabel htmlFor="appellantName">
+                            Name of the Appellant
                         </FieldLabel>
 
                         <Input
                             {...field}
-                            id="respondentName"
+                            id="appellantName"
                             aria-invalid={fieldState.invalid}
-                            placeholder="Name of the respondent"
+                            placeholder="Name of the appellant"
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -83,21 +86,23 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                 )}
             />
 
-            {/* Respondent Office Address */}
+            {/* Appellant Residential Address */}
 
-            <p className="font-semibold">Official Address of the Respondent</p>
+            <p className="font-semibold">
+                Address of the Existing Office/ Residence of the Appellant
+            </p>
             <Controller
-                name="respondentOfficeAddressLine1"
+                name="appellantResidentialAddressLine1"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="respondentOfficeAddressLine1">
+                        <FieldLabel htmlFor="appellantResidentialAddressLine1">
                             Address line 1
                         </FieldLabel>
 
                         <Input
                             {...field}
-                            id="respondentOfficeAddressLine1"
+                            id="appellantResidentialAddressLine1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 1"
                         />
@@ -108,17 +113,17 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                 )}
             />
             <Controller
-                name="respondentOfficeAddressLine2"
+                name="appellantResidentialAddressLine2"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="respondentOfficeAddressLine2">
+                        <FieldLabel htmlFor="appellantResidentialAddressLine2">
                             Address line 2
                         </FieldLabel>
 
                         <Input
                             {...field}
-                            id="respondentOfficeAddressLine2"
+                            id="appellantResidentialAddressLine2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 2"
                         />
@@ -131,11 +136,11 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
 
             <div className="flex gap-4">
                 <Controller
-                    name="respondentOfficeCountry"
+                    name="appellantResidentialCountry"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentOfficeCountry">
+                            <FieldLabel htmlFor="appellantResidentialCountry">
                                 Country
                             </FieldLabel>
 
@@ -147,17 +152,17 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                     )}
                 />
                 <Controller
-                    name="respondentOfficeState"
+                    name="appellantResidentialState"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentOfficeState">
+                            <FieldLabel htmlFor="appellantResidentialState">
                                 State
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentOfficeState"
+                                id="appellantResidentialState"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="State"
                             />
@@ -171,17 +176,17 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
 
             <div className="flex gap-4">
                 <Controller
-                    name="respondentOfficeDistrict"
+                    name="appellantResidentialDistrict"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentOfficeDistrict">
+                            <FieldLabel htmlFor="appellantResidentialDistrict">
                                 District
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentOfficeDistrict"
+                                id="appellantResidentialDistrict"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="District"
                             />
@@ -192,17 +197,17 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                     )}
                 />
                 <Controller
-                    name="respondentOfficeCity"
+                    name="appellantResidentialCity"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentOfficeCity">
+                            <FieldLabel htmlFor="appellantResidentialCity">
                                 City
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentOfficeCity"
+                                id="appellantResidentialCity"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="City"
                             />
@@ -216,17 +221,17 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
 
             <div className="flex gap-4">
                 <Controller
-                    name="respondentOfficeLandmark"
+                    name="appellantResidentialLandmark"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentOfficeLandmark">
+                            <FieldLabel htmlFor="appellantResidentialLandmark">
                                 Landmark/region
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentOfficeLandmark"
+                                id="appellantResidentialLandmark"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Landmark/region"
                             />
@@ -237,17 +242,17 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                     )}
                 />
                 <Controller
-                    name="respondentOfficePinCode"
+                    name="appellantResidentialPinCode"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentOfficePinCode">
+                            <FieldLabel htmlFor="appellantResidentialPinCode">
                                 Zip/Pin code
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentOfficePinCode"
+                                id="appellantResidentialPinCode"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Zip/Pin code"
                             />
@@ -265,40 +270,40 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
             <FieldGroup>
                 <Field orientation="horizontal">
                     <Checkbox
-                        checked={isRespondentServiceAddressSame}
+                        checked={isAppellantServiceAddressSame}
                         onCheckedChange={(checked) => {
-                            setIsRespondentServiceAddressSame(checked === true);
+                            setIsAppellantServiceAddressSame(checked === true);
 
                             if (checked) {
-                                copyOfficeToServiceAddress();
+                                copyResidentialToServiceAddress();
                             }
                         }}
-                        id="isRespondentServiceAddressSame"
-                        name="isRespondentServiceAddressSame"
+                        id="isAppellantServiceAddressSame"
+                        name="isAppellantServiceAddressSame"
                     />
-                    <FieldLabel htmlFor="isRespondentServiceAddressSame">
-                        Is respondent service address same as Office address?
+                    <FieldLabel htmlFor="isAppellantServiceAddressSame">
+                        Is service address same as residential address?
                     </FieldLabel>
                 </Field>
             </FieldGroup>
-            {/* Respondent Service Address */}
+            {/* Appellant Service Address */}
 
             <p className="font-semibold">Address for Service of all Notices</p>
             <Controller
-                name="respondentServiceAddressLine1"
+                name="appellantServiceAddressLine1"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="respondentServiceAddressLine1">
+                        <FieldLabel htmlFor="appellantServiceAddressLine1">
                             Address line 1
                         </FieldLabel>
 
                         <Input
                             {...field}
-                            id="respondentServiceAddressLine1"
+                            id="appellantServiceAddressLine1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 1"
-                            disabled={isRespondentServiceAddressSame}
+                            disabled={isAppellantServiceAddressSame}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -307,20 +312,20 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                 )}
             />
             <Controller
-                name="respondentServiceAddressLine2"
+                name="appellantServiceAddressLine2"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="respondentServiceAddressLine2">
+                        <FieldLabel htmlFor="appellantServiceAddressLine2">
                             Address line 2
                         </FieldLabel>
 
                         <Input
                             {...field}
-                            id="respondentServiceAddressLine2"
+                            id="appellantServiceAddressLine2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 2"
-                            disabled={isRespondentServiceAddressSame}
+                            disabled={isAppellantServiceAddressSame}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -331,18 +336,18 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
 
             <div className="flex gap-4">
                 <Controller
-                    name="respondentServiceCountry"
+                    name="appellantServiceCountry"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentServiceCountry">
+                            <FieldLabel htmlFor="appellantServiceCountry">
                                 Country
                             </FieldLabel>
 
                             <Input
                                 {...field}
                                 readOnly
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={isAppellantServiceAddressSame}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -351,20 +356,20 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                     )}
                 />
                 <Controller
-                    name="respondentServiceState"
+                    name="appellantServiceState"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentServiceState">
+                            <FieldLabel htmlFor="appellantServiceState">
                                 State
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentServiceState"
+                                id="appellantServiceState"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="State"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={isAppellantServiceAddressSame}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -376,20 +381,20 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
 
             <div className="flex gap-4">
                 <Controller
-                    name="respondentServiceDistrict"
+                    name="appellantServiceDistrict"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentServiceDistrict">
+                            <FieldLabel htmlFor="appellantServiceDistrict">
                                 District
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentServiceDistrict"
+                                id="appellantServiceDistrict"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="District"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={isAppellantServiceAddressSame}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -398,20 +403,20 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                     )}
                 />
                 <Controller
-                    name="respondentServiceCity"
+                    name="appellantServiceCity"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentServiceCity">
+                            <FieldLabel htmlFor="appellantServiceCity">
                                 City
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentServiceCity"
+                                id="appellantServiceCity"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="City"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={isAppellantServiceAddressSame}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -423,20 +428,20 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
 
             <div className="flex gap-4">
                 <Controller
-                    name="respondentServiceLandmark"
+                    name="appellantServiceLandmark"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentServiceLandmark">
+                            <FieldLabel htmlFor="appellantServiceLandmark">
                                 Landmark/region
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentServiceLandmark"
+                                id="appellantServiceLandmark"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Landmark/region"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={isAppellantServiceAddressSame}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -445,20 +450,20 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                     )}
                 />
                 <Controller
-                    name="respondentServicePinCode"
+                    name="appellantServicePinCode"
                     control={form.control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor="respondentServicePinCode">
+                            <FieldLabel htmlFor="appellantServicePinCode">
                                 Zip/Pin code
                             </FieldLabel>
 
                             <Input
                                 {...field}
-                                id="respondentServicePinCode"
+                                id="appellantServicePinCode"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Zip/Pin code"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={isAppellantServiceAddressSame}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -469,20 +474,20 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
             </div>
 
             <hr />
-            <p className="font-semibold">Respondent Contact Details</p>
+            <p className="font-semibold">Appellant Contact Details</p>
 
             <Controller
-                name="respondentMobileNumber"
+                name="appellantMobileNumber"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="respondentMobileNumber">
+                        <FieldLabel htmlFor="appellantMobileNumber">
                             Phone/Mobile
                         </FieldLabel>
 
                         <Input
                             {...field}
-                            id="respondentMobileNumber"
+                            id="appellantMobileNumber"
                             aria-invalid={fieldState.invalid}
                             placeholder="Phone/Mobile"
                         />
@@ -494,17 +499,17 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
             />
 
             <Controller
-                name="respondentEmailAddress"
+                name="appellantEmailAddress"
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="respondentEmailAddress">
+                        <FieldLabel htmlFor="appellantEmailAddress">
                             Email Address
                         </FieldLabel>
 
                         <Input
                             {...field}
-                            id="respondentEmailAddress"
+                            id="appellantEmailAddress"
                             aria-invalid={fieldState.invalid}
                             placeholder="Email Address"
                         />
@@ -517,4 +522,3 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
         </>
     );
 };
-export default RespondentSection;

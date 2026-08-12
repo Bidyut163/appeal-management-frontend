@@ -7,7 +7,7 @@ import {
 
 import { Controller, UseFormReturn } from 'react-hook-form';
 
-import { FormInput } from './schemas';
+import { FormInput } from '@/app/(app)/appeals/file/schemas';
 
 import { Input } from '@/components/ui/input';
 

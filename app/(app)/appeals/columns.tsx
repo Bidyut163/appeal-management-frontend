@@ -126,12 +126,22 @@ export const columns: ColumnDef<Appeal>[] = [
     },
     {
         id: 'actions',
+        header: 'Actions',
         cell: ({ row }) => {
-            const { id } = row.original;
+            const { id, status } = row.original;
             return (
-                <Button variant="outline" asChild>
-                    <Link href={`/appeals/${id}`}>View</Link>
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" asChild>
+                        <Link href={`/appeals/${id}`}>View</Link>
+                    </Button>
+                    {status === 'REVERTED_TO_APPELLANT' && (
+                        <Button asChild>
+                            <Link href={`/appeals/${id}/edit`}>
+                                Edit & Resubmit
+                            </Link>
+                        </Button>
+                    )}
+                </div>
             );
         },
     },
