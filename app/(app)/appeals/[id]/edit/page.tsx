@@ -25,87 +25,13 @@ import { AppellantSection } from '@/components/appeals/AppellantSection';
 import RespondentSection from '@/components/appeals/RespondentSection';
 import { AppealDetailsSection } from '@/components/appeals/AppealDetailsSection';
 import { use, useEffect } from 'react';
+import { AppealDetail, AppealRevert } from '@/types/appeal';
 
 interface Props {
     params: Promise<{
         id: string;
     }>;
 }
-
-type AppealDetail = {
-    id: number;
-
-    // ------------- Appellant -------------
-
-    appellantName: string;
-
-    // Residential address
-    appellantResidentialAddressLine1: string;
-    appellantResidentialAddressLine2: string | null;
-    appellantResidentialLandmark: string | null;
-    appellantResidentialCity: string;
-    appellantResidentialDistrict: string;
-    appellantResidentialState: string;
-    appellantResidentialCountry: string;
-    appellantResidentialPinCode: string;
-
-    // Service address
-    appellantServiceAddressLine1: string;
-    appellantServiceAddressLine2: string | null;
-    appellantServiceLandmark: string | null;
-    appellantServiceCity: string;
-    appellantServiceDistrict: string;
-    appellantServiceState: string;
-    appellantServiceCountry: string;
-    appellantServicePinCode: string;
-
-    // Contact details
-    appellantMobileNumber: string;
-    appellantEmailAddress: string;
-
-    // ------------- Respondent -------------
-
-    respondentName: string;
-
-    // Office address
-    respondentOfficeAddressLine1: string;
-    respondentOfficeAddressLine2: string | null;
-    respondentOfficeLandmark: string | null;
-    respondentOfficeCity: string;
-    respondentOfficeDistrict: string;
-    respondentOfficeState: string;
-    respondentOfficeCountry: string;
-    respondentOfficePinCode: string;
-
-    // Service address
-    respondentServiceAddressLine1: string;
-    respondentServiceAddressLine2: string | null;
-    respondentServiceLandmark: string | null;
-    respondentServiceCity: string;
-    respondentServiceDistrict: string;
-    respondentServiceState: string;
-    respondentServiceCountry: string;
-    respondentServicePinCode: string;
-
-    // Contact details
-    respondentMobileNumber: string;
-    respondentEmailAddress: string;
-
-    // ------------- Appeal Details -------------
-
-    projectRegistrationNumber: string | null;
-    isFiledWithinLimitation: boolean;
-    delayReason: string | null;
-    factsOfCase: string;
-    groundsOfAppeal: string;
-    reliefSought: string;
-    interimReliefRequested: string | null;
-    isMatterPendingInCourt: boolean;
-
-    // ------------- Appeal Documents -------------
-
-    // appealDocument: File;
-};
 
 export default function EditPage(props: Props) {
     const { id } = use(props.params);
@@ -136,6 +62,7 @@ export default function EditPage(props: Props) {
                 }),
                 queryClient.invalidateQueries({
                     queryKey: queryKeys.appeal(id),
+                    exact: true,
                 }),
             ]);
 
@@ -236,6 +163,15 @@ export default function EditPage(props: Props) {
         queryFn: () => apiFetch(`/appeals/${id}`),
     });
 
+    const {
+        data: revert,
+        isLoading: isRevertLoading,
+        error: revertError,
+    } = useQuery<AppealRevert>({
+        queryKey: queryKeys.appealRevert(id),
+        queryFn: () => apiFetch(`/appeals/${id}/revert`),
+    });
+
     useEffect(() => {
         if (!appeal) return;
 
@@ -320,7 +256,18 @@ export default function EditPage(props: Props) {
         );
     }
 
-    if (isLoading) {
+    if (revertError) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Failed to load revert details</CardTitle>
+                </CardHeader>
+                <CardContent>{getErrorMessage(revertError)}</CardContent>
+            </Card>
+        );
+    }
+
+    if (isLoading || isRevertLoading) {
         return (
             <Card>
                 <CardContent>Loading ...</CardContent>
@@ -338,34 +285,102 @@ export default function EditPage(props: Props) {
         );
     }
 
+    if (!revert) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>No active revert found</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    This appeal does not have an active revert request.
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
-        <Card className="max-w-3xl">
-            <CardHeader>
-                <CardTitle>Edit Appeal</CardTitle>
-                <CardDescription>
-                    Review and update the information before resubmitting your
-                    appeal.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col gap-4"
-                >
-                    <FieldGroup>
-                        <AppellantSection form={form} />
-                        <RespondentSection form={form} />
-                        <AppealDetailsSection form={form} />
-                    </FieldGroup>
-                    <Button
-                        className="self-start"
-                        type="submit"
-                        disabled={updateAppealMutation.isPending}
+        <>
+            <Card className="mb-4 border-amber-200 bg-amber-50/50">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-amber-900">
+                        Action Required
+                    </CardTitle>
+
+                    <CardDescription className="text-amber-800">
+                        The Registrar has returned this appeal for correction.
+                        Please review the reason below, update the required
+                        fields, and resubmit the appeal.
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                    <div>
+                        <p className="mb-1 text-sm font-semibold text-foreground">
+                            Revert reason
+                        </p>
+
+                        <div className="rounded-md border bg-background p-3 text-sm">
+                            {revert.reason}
+                        </div>
+                    </div>
+
+                    <div>
+                        <p className="mb-2 text-sm font-semibold text-foreground">
+                            Fields requiring correction
+                        </p>
+
+                        <ul className="space-y-2">
+                            {revert.fields.map((field: string) => (
+                                <li
+                                    key={field}
+                                    className="flex items-center gap-2 text-sm"
+                                >
+                                    <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                                    <span>{field}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card className="max-w-3xl">
+                <CardHeader>
+                    <CardTitle>Edit Appeal</CardTitle>
+                    <CardDescription>
+                        Review and update the information before resubmitting
+                        your appeal.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="flex flex-col gap-4"
                     >
-                        Update & Resubmit
-                    </Button>
-                </form>
-            </CardContent>
-        </Card>
+                        <FieldGroup>
+                            <AppellantSection
+                                form={form}
+                                editableFields={revert.fields}
+                            />
+                            <RespondentSection
+                                form={form}
+                                editableFields={revert.fields}
+                            />
+                            <AppealDetailsSection
+                                form={form}
+                                editableFields={revert.fields}
+                            />
+                        </FieldGroup>
+                        <Button
+                            className="self-start"
+                            type="submit"
+                            disabled={updateAppealMutation.isPending}
+                        >
+                            Update & Resubmit
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </>
     );
 }

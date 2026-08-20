@@ -16,11 +16,18 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 interface RespondentSectionProps {
     form: UseFormReturn<FormInput>;
+    editableFields?: string[];
 }
 
-const RespondentSection = ({ form }: RespondentSectionProps) => {
+const RespondentSection = ({
+    form,
+    editableFields,
+}: RespondentSectionProps) => {
     const [isRespondentServiceAddressSame, setIsRespondentServiceAddressSame] =
         useState(false);
+
+    const isFieldEditable = (field: string) =>
+        editableFields?.includes(field) || !editableFields;
 
     const copyOfficeToServiceAddress = () => {
         const values = form.getValues();
@@ -75,6 +82,7 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             id="respondentName"
                             aria-invalid={fieldState.invalid}
                             placeholder="Name of the respondent"
+                            disabled={!isFieldEditable('respondentName')}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -100,6 +108,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             id="respondentOfficeAddressLine1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 1"
+                            disabled={
+                                !isFieldEditable('respondentOfficeAddressLine1')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -121,6 +132,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             id="respondentOfficeAddressLine2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 2"
+                            disabled={
+                                !isFieldEditable('respondentOfficeAddressLine2')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -139,7 +153,13 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 Country
                             </FieldLabel>
 
-                            <Input {...field} readOnly />
+                            <Input
+                                {...field}
+                                readOnly
+                                disabled={
+                                    !isFieldEditable('respondentOfficeCountry')
+                                }
+                            />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                             )}
@@ -160,6 +180,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentOfficeState"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="State"
+                                disabled={
+                                    !isFieldEditable('respondentOfficeState')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -184,6 +207,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentOfficeDistrict"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="District"
+                                disabled={
+                                    !isFieldEditable('respondentOfficeDistrict')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -205,6 +231,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentOfficeCity"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="City"
+                                disabled={
+                                    !isFieldEditable('respondentOfficeCity')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -229,6 +258,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentOfficeLandmark"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Landmark/region"
+                                disabled={
+                                    !isFieldEditable('respondentOfficeLandmark')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -250,6 +282,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentOfficePinCode"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Zip/Pin code"
+                                disabled={
+                                    !isFieldEditable('respondentOfficePinCode')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -298,7 +333,12 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             id="respondentServiceAddressLine1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 1"
-                            disabled={isRespondentServiceAddressSame}
+                            disabled={
+                                isRespondentServiceAddressSame ||
+                                !isFieldEditable(
+                                    'respondentServiceAddressLine1',
+                                )
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -320,7 +360,12 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             id="respondentServiceAddressLine2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 2"
-                            disabled={isRespondentServiceAddressSame}
+                            disabled={
+                                isRespondentServiceAddressSame ||
+                                !isFieldEditable(
+                                    'respondentServiceAddressLine2',
+                                )
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -342,7 +387,10 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             <Input
                                 {...field}
                                 readOnly
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={
+                                    isRespondentServiceAddressSame ||
+                                    !isFieldEditable('respondentServiceCountry')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -364,7 +412,10 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentServiceState"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="State"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={
+                                    isRespondentServiceAddressSame ||
+                                    !isFieldEditable('respondentServiceState')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -389,7 +440,12 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentServiceDistrict"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="District"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={
+                                    isRespondentServiceAddressSame ||
+                                    !isFieldEditable(
+                                        'respondentServiceDistrict',
+                                    )
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -411,7 +467,10 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentServiceCity"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="City"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={
+                                    isRespondentServiceAddressSame ||
+                                    !isFieldEditable('respondentServiceCity')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -436,7 +495,12 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentServiceLandmark"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Landmark/region"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={
+                                    isRespondentServiceAddressSame ||
+                                    !isFieldEditable(
+                                        'respondentServiceLandmark',
+                                    )
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -458,7 +522,10 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                                 id="respondentServicePinCode"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Zip/Pin code"
-                                disabled={isRespondentServiceAddressSame}
+                                disabled={
+                                    isRespondentServiceAddressSame ||
+                                    !isFieldEditable('respondentServicePinCode')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -485,6 +552,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             id="respondentMobileNumber"
                             aria-invalid={fieldState.invalid}
                             placeholder="Phone/Mobile"
+                            disabled={
+                                !isFieldEditable('respondentMobileNumber')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -507,6 +577,9 @@ const RespondentSection = ({ form }: RespondentSectionProps) => {
                             id="respondentEmailAddress"
                             aria-invalid={fieldState.invalid}
                             placeholder="Email Address"
+                            disabled={
+                                !isFieldEditable('respondentEmailAddress')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />

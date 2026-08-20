@@ -20,6 +20,7 @@ import {
     checklistSchema,
     CreateChecklistInput,
     hearingSchema,
+    RevertAppealFormInput,
     RevertAppealInput,
     revertSchema,
     SendToHearingInput,
@@ -63,11 +64,12 @@ export default function RegistrarAppealDetailPage(props: Props) {
         },
     });
 
-    const revertForm = useForm<RevertAppealInput>({
+    const revertForm = useForm<RevertAppealFormInput>({
         resolver: zodResolver(revertSchema),
         mode: 'onChange',
         defaultValues: {
-            registrarComment: '',
+            revertReason: '',
+            fields: [],
         },
     });
 

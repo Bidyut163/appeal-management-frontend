@@ -22,6 +22,7 @@ import { Separator } from '@/components/ui/separator';
 
 interface AppealDetailsSectionProps {
     form: UseFormReturn<FormInput>;
+    editableFields?: string[];
 }
 
 const options = [
@@ -35,8 +36,14 @@ const options = [
     },
 ] as const;
 
-export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
+export const AppealDetailsSection = ({
+    form,
+    editableFields,
+}: AppealDetailsSectionProps) => {
     const isFiledWithinLimitation = form.watch('isFiledWithinLimitation');
+
+    const isFieldEditable = (field: string) =>
+        editableFields?.includes(field) || !editableFields;
 
     useEffect(() => {
         if (isFiledWithinLimitation) {
@@ -67,6 +74,9 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                             id="projectRegistrationNumber"
                             aria-invalid={fieldState.invalid}
                             placeholder="Project Registration Number"
+                            disabled={
+                                !isFieldEditable('projectRegistrationNumber')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -89,6 +99,11 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                                     name={field.name}
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
+                                    disabled={
+                                        !isFieldEditable(
+                                            'isFiledWithinLimitation',
+                                        )
+                                    }
                                 />
                                 <FieldLabel
                                     htmlFor="isFiledWithinLimitation"
@@ -129,7 +144,10 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                             aria-invalid={fieldState.invalid}
                             placeholder="Reasons for delay"
                             className="min-h-30"
-                            disabled={isFiledWithinLimitation}
+                            disabled={
+                                isFiledWithinLimitation ||
+                                !isFieldEditable('delayReason')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -158,6 +176,7 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                             aria-invalid={fieldState.invalid}
                             placeholder="Facts of case"
                             className="min-h-30"
+                            disabled={!isFieldEditable('factsOfCase')}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -183,6 +202,7 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                             aria-invalid={fieldState.invalid}
                             placeholder="Grounds of appeal"
                             className="min-h-30"
+                            disabled={!isFieldEditable('groundsOfAppeal')}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -210,6 +230,7 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                             aria-invalid={fieldState.invalid}
                             placeholder="Relief sought"
                             className="min-h-30"
+                            disabled={!isFieldEditable('reliefSought')}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -237,6 +258,9 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                             aria-invalid={fieldState.invalid}
                             placeholder="Interim order if requested"
                             className="min-h-30"
+                            disabled={
+                                !isFieldEditable('interimReliefRequested')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -263,6 +287,9 @@ export const AppealDetailsSection = ({ form }: AppealDetailsSectionProps) => {
                             onValueChange={(value) => {
                                 field.onChange(value === 'pending');
                             }}
+                            disabled={
+                                !isFieldEditable('isMatterPendingInCourt')
+                            }
                         >
                             {options.map((option) => (
                                 <FieldLabel

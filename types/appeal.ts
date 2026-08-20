@@ -84,3 +84,20 @@ export type AppealDetail = {
 
     appellantId: number;
 };
+
+export type AppealRevert = {
+    id: number;
+    appealId: number;
+    reason: string;
+    fields: string[];
+    status: 'OPEN' | 'RESUBMITTED';
+    createdById: number;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type AppealFormValues = {
+    appellantName: string;
+    appellantResidentialAddressLine1: string;
+    // ...
+};

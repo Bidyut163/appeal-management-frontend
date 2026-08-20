@@ -16,11 +16,18 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 interface AppellantSectionProps {
     form: UseFormReturn<FormInput>;
+    editableFields?: string[];
 }
 
-export const AppellantSection = ({ form }: AppellantSectionProps) => {
+export const AppellantSection = ({
+    form,
+    editableFields,
+}: AppellantSectionProps) => {
     const [isAppellantServiceAddressSame, setIsAppellantServiceAddressSame] =
         useState(false);
+
+    const isFieldEditable = (field: string) =>
+        editableFields?.includes(field) || !editableFields;
 
     const copyResidentialToServiceAddress = () => {
         const values = form.getValues();
@@ -78,6 +85,7 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             id="appellantName"
                             aria-invalid={fieldState.invalid}
                             placeholder="Name of the appellant"
+                            disabled={!isFieldEditable('appellantName')}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -105,6 +113,11 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             id="appellantResidentialAddressLine1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 1"
+                            disabled={
+                                !isFieldEditable(
+                                    'appellantResidentialAddressLine1',
+                                )
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -126,6 +139,11 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             id="appellantResidentialAddressLine2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 2"
+                            disabled={
+                                !isFieldEditable(
+                                    'appellantResidentialAddressLine2',
+                                )
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -144,7 +162,15 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 Country
                             </FieldLabel>
 
-                            <Input {...field} readOnly />
+                            <Input
+                                {...field}
+                                readOnly
+                                disabled={
+                                    !isFieldEditable(
+                                        'appellantResidentialCountry',
+                                    )
+                                }
+                            />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
                             )}
@@ -165,6 +191,11 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantResidentialState"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="State"
+                                disabled={
+                                    !isFieldEditable(
+                                        'appellantResidentialState',
+                                    )
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -189,6 +220,11 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantResidentialDistrict"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="District"
+                                disabled={
+                                    !isFieldEditable(
+                                        'appellantResidentialDistrict',
+                                    )
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -210,6 +246,9 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantResidentialCity"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="City"
+                                disabled={
+                                    !isFieldEditable('appellantResidentialCity')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -234,6 +273,11 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantResidentialLandmark"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Landmark/region"
+                                disabled={
+                                    !isFieldEditable(
+                                        'appellantResidentialLandmark',
+                                    )
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -255,6 +299,11 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantResidentialPinCode"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Zip/Pin code"
+                                disabled={
+                                    !isFieldEditable(
+                                        'appellantResidentialPinCode',
+                                    )
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -303,7 +352,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             id="appellantServiceAddressLine1"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 1"
-                            disabled={isAppellantServiceAddressSame}
+                            disabled={
+                                isAppellantServiceAddressSame ||
+                                !isFieldEditable('appellantServiceAddressLine1')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -325,7 +377,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             id="appellantServiceAddressLine2"
                             aria-invalid={fieldState.invalid}
                             placeholder="Address line 2"
-                            disabled={isAppellantServiceAddressSame}
+                            disabled={
+                                isAppellantServiceAddressSame ||
+                                !isFieldEditable('appellantServiceAddressLine2')
+                            }
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -347,7 +402,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             <Input
                                 {...field}
                                 readOnly
-                                disabled={isAppellantServiceAddressSame}
+                                disabled={
+                                    isAppellantServiceAddressSame ||
+                                    !isFieldEditable('appellantServiceCountry')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -369,7 +427,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantServiceState"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="State"
-                                disabled={isAppellantServiceAddressSame}
+                                disabled={
+                                    isAppellantServiceAddressSame ||
+                                    !isFieldEditable('appellantServiceState')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -394,7 +455,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantServiceDistrict"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="District"
-                                disabled={isAppellantServiceAddressSame}
+                                disabled={
+                                    isAppellantServiceAddressSame ||
+                                    !isFieldEditable('appellantServiceDistrict')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -416,7 +480,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantServiceCity"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="City"
-                                disabled={isAppellantServiceAddressSame}
+                                disabled={
+                                    isAppellantServiceAddressSame ||
+                                    !isFieldEditable('appellantServiceCity')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -441,7 +508,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantServiceLandmark"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Landmark/region"
-                                disabled={isAppellantServiceAddressSame}
+                                disabled={
+                                    isAppellantServiceAddressSame ||
+                                    !isFieldEditable('appellantServiceLandmark')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -463,7 +533,10 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                                 id="appellantServicePinCode"
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Zip/Pin code"
-                                disabled={isAppellantServiceAddressSame}
+                                disabled={
+                                    isAppellantServiceAddressSame ||
+                                    !isFieldEditable('appellantServicePinCode')
+                                }
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
@@ -490,6 +563,7 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             id="appellantMobileNumber"
                             aria-invalid={fieldState.invalid}
                             placeholder="Phone/Mobile"
+                            disabled={!isFieldEditable('appellantMobileNumber')}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -512,6 +586,7 @@ export const AppellantSection = ({ form }: AppellantSectionProps) => {
                             id="appellantEmailAddress"
                             aria-invalid={fieldState.invalid}
                             placeholder="Email Address"
+                            disabled={!isFieldEditable('appellantEmailAddress')}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
