@@ -12,4 +12,6 @@ export const queryKeys = {
     verifierAppeal: (id: string) => ['appeal', 'verifier', id] as const,
 
     registrarAppeal: (id: string) => ['appeal', 'registrar', id] as const,
+
+    officials: ['officials'] as const,
 };
