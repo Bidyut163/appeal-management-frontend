@@ -1,15 +1,18 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { formatDate } from '@/utils/formatDate';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowBigRightDashIcon } from 'lucide-react';
+
 import Link from 'next/link';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Appeal = {
     id: number;
-    description: string;
+    appellantName: string;
+    respondentName: string;
+    createdAt: string;
 };
 
 export const columns: ColumnDef<Appeal>[] = [
@@ -18,12 +21,21 @@ export const columns: ColumnDef<Appeal>[] = [
         header: 'Appeal ID',
     },
     {
-        accessorKey: 'description',
-        header: 'Description',
+        accessorKey: 'appellantName',
+        header: 'Appellant Name',
+    },
+    {
+        accessorKey: 'respondentName',
+        header: 'Respondent Name',
+    },
+    {
+        accessorKey: 'createdAt',
+        header: 'Filed On',
+        cell: ({ row }) => formatDate(row.original.createdAt),
     },
     {
         id: 'actions',
-        header: 'View Detail',
+        header: 'Actions',
         cell: ({ row }) => {
             const { id } = row.original;
             return (
