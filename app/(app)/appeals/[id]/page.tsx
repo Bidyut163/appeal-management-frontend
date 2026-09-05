@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { apiFetch } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
+import { AppealDetail, AppealStatus } from '@/types/appeal';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useQuery } from '@tanstack/react-query';
 
@@ -19,46 +20,12 @@ interface Props {
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
     return (
-        <div className="flex py-3 border-b last:border-none">
+        <div className="flex gap-8 py-3 border-b last:border-none">
             <span className="w-50 text-muted-foreground">{label}</span>
             <span className="font-medium">{value}</span>
         </div>
     );
 }
-
-type Appeal = {
-    id: number;
-    // appellant: string;
-    // respondent: string;
-    // description: string;
-
-    // payment_status: 'pending' | 'success' | 'failed';
-    appeal_status:
-        | 'DRAFT'
-        | 'UNDER_VERIFICATION'
-        | 'WITH_REGISTRAR'
-        | 'REVERTED_TO_APPELLANT'
-        | 'UNDER_HEARING'
-        | 'CLOSED'
-        | 'REJECTED';
-};
-type AppealDetail = {
-    id: string;
-    appellantName: string;
-    respondentName: string;
-    // appellant_address: string;
-    // respondent_address: string;
-    factsOfCase: string;
-    groundsOfAppeal: string;
-    reliefSought: string;
-    // payment_detail: {
-    //     order_id: string;
-    //     amount: number;
-    //     status: Appeal['payment_status'];
-    //     payment_mode: string;
-    // };
-    status: Appeal['appeal_status'];
-};
 
 // function getPaymentVariant(
 //     status: Appeal['payment_status'],
@@ -76,7 +43,7 @@ type AppealDetail = {
 // }
 
 function getAppealStatusVariant(
-    status: Appeal['appeal_status'],
+    status: AppealStatus,
 ): 'success' | 'pending' | 'default' | 'failed' {
     switch (status) {
         case 'DRAFT':
@@ -89,7 +56,7 @@ function getAppealStatusVariant(
             return 'default';
         case 'UNDER_HEARING':
             return 'success';
-        case 'CLOSED':
+        case 'DISPOSED':
             return 'success';
         case 'REJECTED':
             return 'failed';
@@ -114,18 +81,6 @@ export default function AppealDetailPage(props: Props) {
         queryKey: queryKeys.appeal(id),
         queryFn: () => apiFetch(`/appeals/${id}`),
     });
-    // const {
-    //     appellant,
-    //     respondent,
-    //     appellant_address,
-    //     respondent_address,
-    //     description,
-    //     appeal_grounds,
-    //     payment_detail: { order_id, amount, status, payment_mode },
-    //     status,
-    // } = appeal;
-
-    // await new Promise((res) => setTimeout(res, 2000));
 
     if (error) {
         return (
@@ -157,7 +112,7 @@ export default function AppealDetailPage(props: Props) {
     }
 
     return (
-        <Card className="max-w-4xl">
+        <Card>
             <CardHeader>
                 <CardTitle className="flex items-start justify-between">
                     <div>
@@ -199,21 +154,108 @@ export default function AppealDetailPage(props: Props) {
                     />
                 </section>
 
-                {/* Address */}
-                {/* <section className="space-y-2 border-b pb-4 last:border-none">
+                {/* Appellant Address */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
                     <h2 className="text-base font-semibold text-muted-foreground">
-                        Address
+                        Appellant Address
                     </h2>
 
                     <InfoRow
-                        label="Appellant Address"
-                        value={appellant_address}
+                        label="Appellant Residential Address:"
+                        value={appeal.appellantResidentialAddressLine1}
                     />
                     <InfoRow
-                        label="Respondent Address"
-                        value={respondent_address}
+                        label="Appellant Service Address:"
+                        value={appeal.appellantServiceAddressLine1}
                     />
-                </section> */}
+                </section>
+
+                {/* Appellant Contact */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Appellant Contact
+                    </h2>
+
+                    <InfoRow
+                        label="Mobile Number:"
+                        value={appeal.appellantMobileNumber}
+                    />
+                    <InfoRow
+                        label="Email Address:"
+                        value={appeal.appellantEmailAddress}
+                    />
+                </section>
+
+                {/* Respondent Address */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Respondent Address
+                    </h2>
+
+                    <InfoRow
+                        label="Respondent Office Address:"
+                        value={appeal.respondentOfficeAddressLine1}
+                    />
+
+                    <InfoRow
+                        label="Respondent Service Address:"
+                        value={appeal.respondentServiceAddressLine1}
+                    />
+                </section>
+
+                {/* Respondent Contact */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Respondent Contact
+                    </h2>
+
+                    <InfoRow
+                        label="Mobile Number:"
+                        value={appeal.respondentMobileNumber}
+                    />
+                    <InfoRow
+                        label="Email Address:"
+                        value={appeal.respondentEmailAddress}
+                    />
+                </section>
+
+                {/* Appeal Details  */}
+
+                {/* Project Registration Number */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Jurisdiction of the Appellant Tribunal
+                    </h2>
+
+                    <p>
+                        The appellant declares that the subject matter of the
+                        appeal falls within the jurisdiction of the Appellate
+                        Tribunal.
+                    </p>
+
+                    <InfoRow
+                        label="Project Registration Number: "
+                        value={appeal.projectRegistrationNumber}
+                    />
+                </section>
+
+                {/* Limitation */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Limitation
+                    </h2>
+
+                    <InfoRow
+                        label="The appellant declares that the appeal is within the
+                        limitation specified in subsection (2) of section 44."
+                        value={appeal.isFiledWithinLimitation ? 'Yes' : 'No'}
+                    />
+
+                    <InfoRow
+                        label="If the appeal is filed after the expiry of the limitation period specified under subsection (2) of section 44 specify reasons for delay."
+                        value={appeal.delayReason || '—'}
+                    />
+                </section>
 
                 {/* Facts of case */}
                 <section className="space-y-2 border-b pb-4 last:border-none">
@@ -238,6 +280,32 @@ export default function AppealDetailPage(props: Props) {
                     </h2>
                     <div className="py-2">{appeal.reliefSought}</div>
                 </section>
+
+                {/*  */}
+                {/* Interim order */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Interim order, if prayed for
+                    </h2>
+
+                    <InfoRow
+                        label="Pending final decision on the appeal, the appellant seeks issue of the following
+                                interim order:"
+                        value={appeal.interimReliefRequested || '—'}
+                    />
+                </section>
+                {/* Limitation */}
+                <section className="space-y-2 border-b pb-4 last:border-none">
+                    <h2 className="text-base font-semibold text-muted-foreground">
+                        Matter not pending with any other court, etc.
+                    </h2>
+
+                    <InfoRow
+                        label="Matter not pending with any other court, etc:"
+                        value={appeal.isMatterPendingInCourt ? 'Yes' : 'No'}
+                    />
+                </section>
+
                 {/* Payment */}
                 {/* <section className="space-y-2 border-b pb-4 last:border-none">
                     <h2 className="text-base font-semibold text-muted-foreground">
