@@ -1,3 +1,10 @@
+export type Hearing = {
+    id: number;
+    hearingNumber: number;
+    hearingDate: string;
+    status: 'SCHEDULED' | 'COMPLETED';
+};
+
 export type AppealStatus =
     | 'DRAFT'
     | 'UNDER_VERIFICATION'
@@ -83,6 +90,8 @@ export type AppealDetail = {
     registrarComments: string | null;
 
     appellantId: number;
+
+    hearings: Hearing[];
 };
 
 export type AppealRevert = {

@@ -37,6 +37,11 @@ export default function MainMenu() {
             roles: ['REGISTRAR'],
         },
         {
+            label: 'Appeals Under Hearing',
+            href: '/registrar/appeals/under-hearing',
+            roles: ['REGISTRAR'],
+        },
+        {
             label: 'Officials',
             href: '/admin/users',
             roles: ['ADMIN'],

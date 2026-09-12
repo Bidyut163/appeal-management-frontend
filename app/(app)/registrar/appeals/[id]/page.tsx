@@ -122,7 +122,7 @@ export default function RegistrarAppealDetailPage(props: Props) {
 
             // toast success message
             toast.success('Appeal sent to hearing.');
-            router.push('/registrar');
+            router.push('/registrar/appeals/under-hearing');
         },
 
         onError: (error) => {

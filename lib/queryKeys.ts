@@ -14,4 +14,7 @@ export const queryKeys = {
     registrarAppeal: (id: string) => ['appeal', 'registrar', id] as const,
 
     officials: ['officials'] as const,
+
+    hearingAppeals: ['appeals', 'hearing'] as const,
+    hearingAppeal: (id: string) => ['appeal', 'hearing', id] as const,
 };
