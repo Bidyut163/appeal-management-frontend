@@ -22,12 +22,11 @@ import {
     RazorpaySuccessResponse,
     VerifyPaymentRequest,
 } from './types';
-import {
-    type AppealStatus,
-    formatStatus,
-    getAppealStatusVariant,
-} from '@/utils/appealStatus';
+
 import InfoRow from './InfoRow';
+import { getAppealStatusVariant } from '@/utils/getAppealStatusVariant';
+import { formatStatus } from '@/utils/formatStatus';
+import { AppealDetail } from '@/types/appeal';
 
 interface Props {
     params: Promise<{
@@ -35,21 +34,12 @@ interface Props {
     }>;
 }
 
-type AppealDetail = {
-    id: string;
-    appellantName: string;
-    respondentName: string;
-    appellantEmailAddress: string;
-    appellantMobileNumber: string;
-    status: AppealStatus;
-};
-
 export default function PaymentPage(props: Props) {
     const { id } = use(props.params);
     const router = useRouter();
 
-    const handlePayNow = (appealId: string) => {
-        const data = { appealId: Number(appealId) };
+    const handlePayNow = (appealId: number) => {
+        const data = { appealId };
         createOrderMutation.mutate(data);
     };
 
