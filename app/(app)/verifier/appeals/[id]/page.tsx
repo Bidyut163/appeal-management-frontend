@@ -1,5 +1,8 @@
 'use client';
 
+import AppealHeader from '@/components/appeals/detail/AppealHeader';
+import AppealDetailComponent from '@/components/appeals/detail/AppealDetail';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -27,17 +30,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import * as z from 'zod';
+import { AppealDetail } from '@/types/appeal';
 
 interface Props {
     params: Promise<{
         id: string;
     }>;
 }
-
-type AppealDetail = {
-    id: number;
-    description: string;
-};
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -108,7 +107,7 @@ export default function VerifierAppealDetailPage(props: Props) {
         data: appeal,
         isLoading,
         error,
-    } = useQuery<AppealDetail | null>({
+    } = useQuery<AppealDetail>({
         // queryKey: ['appeal', 'verifier', id],
         queryKey: queryKeys.verifierAppeal(id),
         queryFn: () => apiFetch(`/verifier/appeals/${id}`),
@@ -144,23 +143,10 @@ export default function VerifierAppealDetailPage(props: Props) {
     return (
         <>
             <Card className="max-w-4xl">
-                <CardHeader>
-                    <CardTitle className="flex items-start justify-between">
-                        <div>
-                            <h1 className="text-xl font-semibold">
-                                Appeal #{appeal.id}
-                            </h1>
-                        </div>
-                    </CardTitle>
-                </CardHeader>
+                <AppealHeader id={appeal.id} status={appeal.status} />
                 <CardContent className="space-y-6">
-                    {/* Description */}
-                    <section className="space-y-2 border-b pb-4 last:border-none">
-                        <h2 className="text-base font-semibold text-muted-foreground">
-                            Description
-                        </h2>
-                        <div className="py-2">{appeal.description}</div>
-                    </section>
+                    {/* appeal detail */}
+                    <AppealDetailComponent appeal={appeal} />
                 </CardContent>
             </Card>
 

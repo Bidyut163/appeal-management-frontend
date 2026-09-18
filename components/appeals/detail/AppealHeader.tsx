@@ -2,14 +2,11 @@ import { CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { AppealStatus } from '@/types/appeal';
 import { getAppealStatusVariant } from '@/utils/getAppealStatusVariant';
+import { formatStatus } from '@/utils/formatStatus';
 
 interface Props {
     id: number;
     status: AppealStatus;
-}
-
-function formatStatus(status: AppealStatus) {
-    return status.replaceAll('_', ' ');
 }
 
 export default function AppealHeader({ id, status }: Props) {
