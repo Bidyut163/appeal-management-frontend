@@ -92,6 +92,13 @@ export type AppealDetail = {
     appellantId: number;
 
     hearings: Hearing[];
+
+    appealChecklist: AppealChecklist | null;
+};
+
+export type AppealChecklist = {
+    complaintNumber: string | null;
+    sectionNumber: string | null;
 };
 
 export type AppealRevert = {
