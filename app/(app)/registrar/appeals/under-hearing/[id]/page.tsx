@@ -2,47 +2,27 @@
 
 import { AuditHistory } from '@/components/appeals/detail/AuditHistory';
 import AppealDetailComponent from '@/components/appeals/detail/AppealDetail';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import {
-    Field,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-} from '@/components/ui/field';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+
 import { apiFetch } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
-import { AppealDetail, AppealStatus } from '@/types/appeal';
-import { formatDate } from '@/utils/formatDate';
+import type { AppealDetail } from '@/types/appeal';
+
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { CalendarCheckIcon, CircleCheckBig } from 'lucide-react';
 
 // import { DownloadIcon } from 'lucide-react';
 import { use } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import z from 'zod';
+
+import AppealHeader from '@/components/appeals/detail/AppealHeader';
+import { HearingHistory } from './HearingHistory';
+import {
+    type ScheduleNextHearingInput,
+    scheduleNextHearingSchema,
+} from './schemas';
 
 interface Props {
     params: Promise<{
@@ -64,41 +44,6 @@ interface Props {
 //             return 'pending';
 //     }
 // }
-
-function getAppealStatusVariant(
-    status: AppealStatus,
-): 'success' | 'pending' | 'default' | 'failed' {
-    switch (status) {
-        case 'DRAFT':
-            return 'pending';
-        case 'UNDER_VERIFICATION':
-            return 'default';
-        case 'WITH_REGISTRAR':
-            return 'default';
-        case 'REVERTED_TO_APPELLANT':
-            return 'default';
-        case 'UNDER_HEARING':
-            return 'success';
-        case 'DISPOSED':
-            return 'success';
-        case 'REJECTED':
-            return 'failed';
-        default:
-            return 'pending';
-    }
-}
-
-function formatStatus(status: string) {
-    return status.replaceAll('_', ' ');
-}
-
-const scheduleNextHearingSchema = z.object({
-    hearingDate: z.date({
-        error: 'Hearing date is required',
-    }),
-});
-
-type ScheduleNextHearingInput = z.infer<typeof scheduleNextHearingSchema>;
 
 export default function AppealUnderHearingPage(props: Props) {
     const { id } = use(props.params);
@@ -171,10 +116,6 @@ export default function AppealUnderHearingPage(props: Props) {
         },
     });
 
-    const scheduleNextHearingSubmit = (data: ScheduleNextHearingInput) => {
-        scheduleNextHearingMutation.mutate(data);
-    };
-
     if (error) {
         return (
             <Card>
@@ -204,221 +145,25 @@ export default function AppealUnderHearingPage(props: Props) {
         );
     }
 
-    const currentHearing = appeal.hearings[appeal.hearings.length - 1];
-
     return (
         <Card>
-            <CardHeader>
-                <CardTitle className="flex items-start justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold">
-                            Appeal #{appeal.id}
-                        </h1>
-                        <div className="mt-1 flex gap-2 items-center">
-                            <span className="text-sm text-muted-foreground">
-                                Status:
-                            </span>
-                            <Badge
-                                variant={getAppealStatusVariant(appeal.status)}
-                            >
-                                {formatStatus(appeal.status)}
-                            </Badge>
-                        </div>
-                    </div>
-                </CardTitle>
-            </CardHeader>
+            <AppealHeader id={appeal.id} status={appeal.status} />
             <CardContent className="space-y-6">
                 {/* Hearing History */}
-                <section className="space-y-2 border-b pb-4">
-                    <h2 className="text-base font-semibold text-muted-foreground">
-                        Hearing History
-                    </h2>
-
-                    <div className="space-y-3">
-                        {appeal.hearings.map((hearing) => (
-                            <div
-                                key={hearing.id}
-                                className="rounded-md border p-4"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-medium">
-                                            Hearing #{hearing.hearingNumber}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {formatDate(hearing.hearingDate)}
-                                        </p>
-                                    </div>
-
-                                    <div className="flex flex-col gap-2 items-end">
-                                        <Badge>
-                                            {formatStatus(hearing.status)}
-                                        </Badge>
-                                        {currentHearing === hearing &&
-                                            currentHearing?.status ===
-                                                'SCHEDULED' && (
-                                                <Button
-                                                    disabled={
-                                                        completeHearingMutation.isPending
-                                                    }
-                                                    onClick={() =>
-                                                        completeHearingMutation.mutate(
-                                                            {
-                                                                hearingId:
-                                                                    currentHearing.id,
-                                                            },
-                                                        )
-                                                    }
-                                                    className="cursor-pointer"
-                                                >
-                                                    <CircleCheckBig />{' '}
-                                                    {completeHearingMutation.isPending
-                                                        ? 'Completing...'
-                                                        : 'Complete Hearing'}
-                                                </Button>
-                                            )}
-                                        {currentHearing === hearing &&
-                                            currentHearing?.status ===
-                                                'COMPLETED' && (
-                                                <Dialog>
-                                                    <form
-                                                        id="scheduleNextHearing-form"
-                                                        onSubmit={form.handleSubmit(
-                                                            scheduleNextHearingSubmit,
-                                                        )}
-                                                    >
-                                                        <DialogTrigger asChild>
-                                                            <Button>
-                                                                Schedule Next
-                                                                Hearing
-                                                            </Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent className="sm:max-w-sm">
-                                                            <DialogHeader>
-                                                                <DialogTitle>
-                                                                    Schedule
-                                                                    Next
-                                                                    Hearing!
-                                                                </DialogTitle>
-                                                                <DialogDescription>
-                                                                    Please
-                                                                    select next
-                                                                    hearing
-                                                                    date.
-                                                                </DialogDescription>
-                                                            </DialogHeader>
-
-                                                            <FieldGroup>
-                                                                <Controller
-                                                                    name="hearingDate"
-                                                                    control={
-                                                                        form.control
-                                                                    }
-                                                                    render={({
-                                                                        field,
-                                                                        fieldState,
-                                                                    }) => (
-                                                                        <Field
-                                                                            data-invalid={
-                                                                                fieldState.invalid
-                                                                            }
-                                                                        >
-                                                                            <FieldLabel htmlFor="hearingDate">
-                                                                                Date
-                                                                                of
-                                                                                hearing
-                                                                            </FieldLabel>
-
-                                                                            <Popover>
-                                                                                <PopoverTrigger
-                                                                                    asChild
-                                                                                >
-                                                                                    <Button
-                                                                                        id="hearingDate"
-                                                                                        variant="outline"
-                                                                                        className="justify-between font-normal pr-1"
-                                                                                    >
-                                                                                        {field.value ? (
-                                                                                            format(
-                                                                                                field.value,
-                                                                                                'PPP',
-                                                                                            )
-                                                                                        ) : (
-                                                                                            <span>
-                                                                                                Select
-                                                                                                date
-                                                                                            </span>
-                                                                                        )}
-
-                                                                                        <CalendarCheckIcon />
-                                                                                    </Button>
-                                                                                </PopoverTrigger>
-
-                                                                                <PopoverContent
-                                                                                    className="w-auto p-0"
-                                                                                    align="start"
-                                                                                >
-                                                                                    <Calendar
-                                                                                        mode="single"
-                                                                                        selected={
-                                                                                            field.value
-                                                                                        }
-                                                                                        onSelect={
-                                                                                            field.onChange
-                                                                                        }
-                                                                                        defaultMonth={
-                                                                                            field.value
-                                                                                        }
-                                                                                        fixedWeeks
-                                                                                        weekStartsOn={
-                                                                                            1
-                                                                                        }
-                                                                                        captionLayout="dropdown"
-                                                                                    />
-                                                                                </PopoverContent>
-                                                                            </Popover>
-                                                                            {fieldState.invalid && (
-                                                                                <FieldError
-                                                                                    errors={[
-                                                                                        fieldState.error,
-                                                                                    ]}
-                                                                                />
-                                                                            )}
-                                                                        </Field>
-                                                                    )}
-                                                                />
-                                                            </FieldGroup>
-
-                                                            <DialogFooter>
-                                                                <DialogClose
-                                                                    asChild
-                                                                >
-                                                                    <Button variant="outline">
-                                                                        Cancel
-                                                                    </Button>
-                                                                </DialogClose>
-                                                                <Button
-                                                                    type="submit"
-                                                                    form="scheduleNextHearing-form"
-                                                                    // disabled={form.formState.isSubmitting}
-                                                                    disabled={
-                                                                        scheduleNextHearingMutation.isPending
-                                                                    }
-                                                                >
-                                                                    Schedule
-                                                                    Next Hearing
-                                                                </Button>
-                                                            </DialogFooter>
-                                                        </DialogContent>
-                                                    </form>
-                                                </Dialog>
-                                            )}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
+                <HearingHistory
+                    hearings={appeal.hearings}
+                    completeHearing={(hearingId) =>
+                        completeHearingMutation.mutate({ hearingId })
+                    }
+                    isCompletingHearing={completeHearingMutation.isPending}
+                    form={form}
+                    scheduleNextHearing={(data) =>
+                        scheduleNextHearingMutation.mutate(data)
+                    }
+                    isSchedulingNextHearing={
+                        scheduleNextHearingMutation.isPending
+                    }
+                />
 
                 <AppealDetailComponent appeal={appeal} />
                 {/* Payment */}
