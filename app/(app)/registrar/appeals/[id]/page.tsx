@@ -25,41 +25,15 @@ import {
     revertSchema,
     SendToHearingInput,
 } from './schemas';
-import type { AppealDetail, AppealStatus } from '@/types/appeal';
+import type { AppealDetail } from '@/types/appeal';
 import AppealDetailComponent from '@/components/appeals/detail/AppealDetail';
-import { Badge } from '@/components/ui/badge';
+
+import AppealHeader from '@/components/appeals/detail/AppealHeader';
 
 interface Props {
     params: Promise<{
         id: string;
     }>;
-}
-
-function getAppealStatusVariant(
-    status: AppealStatus,
-): 'success' | 'pending' | 'default' | 'failed' {
-    switch (status) {
-        case 'DRAFT':
-            return 'pending';
-        case 'UNDER_VERIFICATION':
-            return 'default';
-        case 'WITH_REGISTRAR':
-            return 'default';
-        case 'REVERTED_TO_APPELLANT':
-            return 'default';
-        case 'UNDER_HEARING':
-            return 'success';
-        case 'DISPOSED':
-            return 'success';
-        case 'REJECTED':
-            return 'failed';
-        default:
-            return 'pending';
-    }
-}
-
-function formatStatus(status: string) {
-    return status.replaceAll('_', ' ');
 }
 
 export default function RegistrarAppealDetailPage(props: Props) {
@@ -215,28 +189,7 @@ export default function RegistrarAppealDetailPage(props: Props) {
     return (
         <>
             <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-start justify-between">
-                        <div>
-                            <h1 className="text-xl font-semibold">
-                                Appeal #{appeal.id}
-                            </h1>
-                            <div className="mt-1 flex gap-2 items-center">
-                                <span className="text-sm text-muted-foreground">
-                                    Status:
-                                </span>
-
-                                <Badge
-                                    variant={getAppealStatusVariant(
-                                        appeal.status,
-                                    )}
-                                >
-                                    {formatStatus(appeal.status)}
-                                </Badge>
-                            </div>
-                        </div>
-                    </CardTitle>
-                </CardHeader>
+                <AppealHeader id={appeal.id} status={appeal.status} />
                 <CardContent className="space-y-6">
                     {/* appeal detail */}
                     <AppealDetailComponent appeal={appeal} />
