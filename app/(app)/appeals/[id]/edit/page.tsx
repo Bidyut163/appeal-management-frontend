@@ -21,9 +21,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 // import { createAppealFormData } from '../../file/createAppealFormData';
 import { ResubmitFormInput, resubmitAppealSchema } from '../../file/schemas';
-import { AppellantSection } from '@/components/appeals/AppellantSection';
-import RespondentSection from '@/components/appeals/RespondentSection';
-import { AppealDetailsSection } from '@/components/appeals/AppealDetailsSection';
+import { AppellantSection } from '@/components/appeals/form/AppellantSection';
+import RespondentSection from '@/components/appeals/form/RespondentSection';
+import { AppealDetailsSection } from '@/components/appeals/form/AppealDetailsSection';
 import { use, useEffect } from 'react';
 import { AppealDetail, AppealRevert } from '@/types/appeal';
 

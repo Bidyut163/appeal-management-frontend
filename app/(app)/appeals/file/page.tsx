@@ -20,11 +20,11 @@ import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 
-import { AppellantSection } from '@/components/appeals/AppellantSection';
+import { AppellantSection } from '@/components/appeals/form/AppellantSection';
 import { FormInput, formSchema } from './schemas';
-import RespondentSection from '@/components/appeals/RespondentSection';
-import { AppealDetailsSection } from '@/components/appeals/AppealDetailsSection';
-import { AppealDocumentSection } from '@/components/appeals/AppealDocumentSection';
+import RespondentSection from '@/components/appeals/form/RespondentSection';
+import { AppealDetailsSection } from '@/components/appeals/form/AppealDetailsSection';
+import { AppealDocumentSection } from '@/components/appeals/form/AppealDocumentSection';
 import { createAppealFormData } from './createAppealFormData';
 
 export default function FilePage() {

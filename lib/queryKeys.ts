@@ -17,4 +17,6 @@ export const queryKeys = {
 
     hearingAppeals: ['appeals', 'hearing'] as const,
     hearingAppeal: (id: string) => ['appeal', 'hearing', id] as const,
+
+    auditLog: (id: string) => ['audit-log', id] as const,
 };

@@ -1,5 +1,6 @@
 'use client';
 
+import { AuditHistory } from '@/components/appeals/detail/AuditHistory';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -613,6 +614,7 @@ export default function AppealUnderHearingPage(props: Props) {
                     />
                     <InfoRow label="Payment Mode" value={payment_mode} />
                 </section> */}
+                <AuditHistory appealId={id} />
             </CardContent>
         </Card>
     );
