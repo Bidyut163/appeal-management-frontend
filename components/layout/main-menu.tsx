@@ -82,7 +82,7 @@ export default function MainMenu() {
     });
 
     return (
-        <nav className="bg-muted p-4 border-r overflow-y-auto flex flex-col">
+        <nav className="h-screen bg-muted p-4 border-r  flex flex-col">
             {/* <div className="border-b border-border pb-4"> */}
             <div className="pb-4">
                 <MenuTitle />

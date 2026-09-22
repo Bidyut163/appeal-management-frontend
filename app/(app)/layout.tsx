@@ -24,11 +24,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="grid grid-cols-[250px_1fr] min-h-screen">
+        <div className="grid grid-cols-[250px_1fr] h-screen">
             <MainMenu />
-            <section className="flex flex-col">
+            <section className="flex flex-col min-h-0">
                 <Navbar />
-                <main className="p-4 flex-1 overflow-auto">{children}</main>
+                <main className="min-h-0 flex-1 overflow-y-auto p-4">
+                    {children}
+                </main>
             </section>
         </div>
     );
