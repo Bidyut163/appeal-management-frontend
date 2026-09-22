@@ -1,11 +1,5 @@
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { redirect } from 'next/navigation';
 
 export default function AdminPage() {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Admin Page</CardTitle>
-            </CardHeader>
-        </Card>
-    );
+    redirect('/admin/users');
 }
