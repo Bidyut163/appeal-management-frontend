@@ -81,7 +81,7 @@ export default function CreateUsersPage() {
     }
 
     return (
-        <Card className="max-w-3xl">
+        <Card>
             <CardHeader>
                 <CardTitle>Create an official</CardTitle>
                 <CardDescription>

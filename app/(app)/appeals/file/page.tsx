@@ -130,7 +130,7 @@ export default function FilePage() {
     }
 
     return (
-        <Card className="max-w-3xl">
+        <Card>
             <CardHeader>
                 <CardTitle>File Appeal(Form C)</CardTitle>
                 <CardDescription>
