@@ -9,3 +9,11 @@ export const scheduleNextHearingSchema = z.object({
 export type ScheduleNextHearingInput = z.infer<
     typeof scheduleNextHearingSchema
 >;
+
+export const disposeAppealSchema = z
+    .object({
+        comment: z.string().trim().min(1, 'Decision comment is required'),
+    })
+    .strict();
+
+export type DisposeAppealInput = z.infer<typeof disposeAppealSchema>;

@@ -20,9 +20,13 @@ import { toast } from 'sonner';
 import AppealHeader from '@/components/appeals/detail/AppealHeader';
 import { HearingHistory } from './HearingHistory';
 import {
+    DisposeAppealInput,
+    disposeAppealSchema,
     type ScheduleNextHearingInput,
     scheduleNextHearingSchema,
 } from './schemas';
+import DisposeAppealCard from './DisposeAppealCard';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     params: Promise<{
@@ -48,6 +52,7 @@ interface Props {
 export default function AppealUnderHearingPage(props: Props) {
     const { id } = use(props.params);
     const queryClient = useQueryClient();
+    const router = useRouter();
 
     const {
         data: appeal,
@@ -108,11 +113,42 @@ export default function AppealUnderHearingPage(props: Props) {
         },
     });
 
-    const form = useForm<ScheduleNextHearingInput>({
+    const scheduleHearingForm = useForm<ScheduleNextHearingInput>({
         resolver: zodResolver(scheduleNextHearingSchema),
         mode: 'onChange',
         defaultValues: {
             hearingDate: undefined,
+        },
+    });
+
+    const disposeForm = useForm<DisposeAppealInput>({
+        resolver: zodResolver(disposeAppealSchema),
+        mode: 'onChange',
+        defaultValues: {
+            comment: '',
+        },
+    });
+
+    const disposeAppealMutation = useMutation({
+        mutationFn: (data: DisposeAppealInput) =>
+            apiFetch(`/registrar/appeals/${id}/dispose`, {
+                method: 'PATCH',
+                body: JSON.stringify(data),
+            }),
+        onSuccess: async () => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: queryKeys.hearingAppeals,
+                }),
+            ]);
+
+            toast.success('Appeal disposed.');
+            router.push('/registrar');
+        },
+
+        onError: (error) => {
+            console.error(error);
+            toast.error(getErrorMessage(error));
         },
     });
 
@@ -156,7 +192,7 @@ export default function AppealUnderHearingPage(props: Props) {
                         completeHearingMutation.mutate({ hearingId })
                     }
                     isCompletingHearing={completeHearingMutation.isPending}
-                    form={form}
+                    form={scheduleHearingForm}
                     scheduleNextHearing={(data) =>
                         scheduleNextHearingMutation.mutate(data)
                     }
@@ -185,6 +221,10 @@ export default function AppealUnderHearingPage(props: Props) {
                     <InfoRow label="Payment Mode" value={payment_mode} />
                 </section> */}
                 <AuditHistory appealId={id} />
+                <DisposeAppealCard
+                    form={disposeForm}
+                    disposeAppealMutation={disposeAppealMutation}
+                />
             </CardContent>
         </Card>
     );
