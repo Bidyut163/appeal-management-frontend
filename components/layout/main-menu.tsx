@@ -2,7 +2,16 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import MenuItem from './menu-item';
 import MenuTitle from './menu-title';
 
-import { SunDimIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import {
+    CalendarClockIcon,
+    ClipboardListIcon,
+    FileTextIcon,
+    GavelIcon,
+    SunDimIcon,
+    UserPlusIcon,
+    UsersIcon,
+} from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import type { RoleType } from '@/types/role';
 import { Button } from '../ui/button';
@@ -19,43 +28,51 @@ export default function MainMenu() {
         label: string;
         href: string;
         roles: RoleType[];
+        icon: LucideIcon;
     };
 
     const menuItems: MenuItem[] = [
         {
-            label: 'File an Appeal',
+            label: 'File an appeal',
             href: '/appeals/file',
             roles: ['APPELLANT'],
+            icon: FileTextIcon,
         },
         {
-            label: 'My Appeals',
+            label: 'My appeals',
             href: '/appeals',
             roles: ['APPELLANT'],
+            icon: ClipboardListIcon,
         },
         {
             label: 'Appeals',
             href: '/verifier',
             roles: ['VERIFIER'],
+            icon: GavelIcon,
         },
         {
             label: 'Appeals',
             href: '/registrar',
             roles: ['REGISTRAR'],
+            icon: GavelIcon,
         },
         {
-            label: 'Appeals Under Hearing',
+            label: 'Under Hearing',
             href: '/registrar/appeals/under-hearing',
             roles: ['REGISTRAR'],
+            icon: CalendarClockIcon,
         },
         {
             label: 'Officials',
             href: '/admin/users',
             roles: ['ADMIN'],
+            icon: UsersIcon,
         },
         {
-            label: 'Create an Official',
+            label: 'Create an official',
             href: '/admin/users/create',
             roles: ['ADMIN'],
+            icon: UserPlusIcon,
         },
     ];
 
@@ -90,6 +107,7 @@ export default function MainMenu() {
             <div className="py-4 grow">
                 {allowedItems.map((item) => (
                     <MenuItem key={item.href} href={item.href}>
+                        <item.icon className="size-4" />
                         {item.label}
                     </MenuItem>
                 ))}
