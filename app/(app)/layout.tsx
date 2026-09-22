@@ -6,7 +6,7 @@ import { useAuthStore } from '@/stores/authStore';
 
 // components
 import MainMenu from '@/components/layout/main-menu';
-import Navbar from '@/components/layout/navbar';
+// import Navbar from '@/components/layout/navbar';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="grid grid-cols-[250px_1fr] h-screen">
             <MainMenu />
             <section className="flex flex-col min-h-0">
-                <Navbar />
+                {/* <Navbar /> */}
                 <main className="min-h-0 flex-1 overflow-y-auto p-4">
                     {children}
                 </main>
