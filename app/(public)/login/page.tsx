@@ -83,6 +83,7 @@ export default function LoginPage() {
                 width={220}
                 height={220}
                 className="mx-auto"
+                priority
             />
             <Card className="w-full max-w-sm">
                 <CardHeader>

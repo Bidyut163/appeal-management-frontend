@@ -72,6 +72,7 @@ export default function SignupPage() {
                 width={220}
                 height={220}
                 className="mx-auto"
+                priority
             />
             <Card className="w-full max-w-sm">
                 <CardHeader>
