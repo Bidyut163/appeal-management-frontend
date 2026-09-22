@@ -14,16 +14,17 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 
 import RevertAppealCard from './RevertAppealCard';
-import ChecklistCard from './ChecklistCard';
+import ChecklistCard from './checklist/ChecklistCard';
 import HearingCard from './HearingCard';
 import {
-    checklistSchema,
-    CreateChecklistInput,
     hearingSchema,
     RevertAppealFormInput,
     RevertAppealInput,
     revertSchema,
     SendToHearingInput,
+    UpdateAppealScrutinyInput,
+    UpdateAppealScrutinyOutput,
+    updateAppealScrutinySchema,
 } from './schemas';
 import type { AppealDetail } from '@/types/appeal';
 import AppealDetailComponent from '@/components/appeals/detail/AppealDetail';
@@ -41,12 +42,51 @@ export default function RegistrarAppealDetailPage(props: Props) {
     const router = useRouter();
     const queryClient = useQueryClient();
 
-    const checklistForm = useForm<CreateChecklistInput>({
-        resolver: zodResolver(checklistSchema),
-        // mode: 'onChange',
+    const checklistForm = useForm<
+        UpdateAppealScrutinyInput,
+        unknown,
+        UpdateAppealScrutinyOutput
+    >({
+        resolver: zodResolver(updateAppealScrutinySchema),
+        // mode: "onChange",
         defaultValues: {
+            appealNumber: '',
             complaintNumber: '',
-            sectionNumber: '',
+            legalProvision: '',
+
+            isAppealCompetent: undefined,
+            arePartiesAndAddressesProper: undefined,
+            isCertifiedCopyFiled: undefined,
+
+            orderDate: undefined,
+            communicationDate: undefined,
+            certifiedCopyApplicationDate: undefined,
+            certifiedCopyReadyDate: undefined,
+            certifiedCopyReceiptDate: undefined,
+            onlineFilingDate: undefined,
+            hardCopySubmissionDate: undefined,
+
+            isHardCopySubmissionDelayed: undefined,
+            hardCopyDelayDays: undefined,
+
+            isAppealWithinLimitation: undefined,
+            isAppealFilingDelayed: undefined,
+            appealFilingDelayDays: undefined,
+
+            isCondonationApplicationFiled: undefined,
+            objectionForCondonationDelay: '',
+
+            areFeesPaid: undefined,
+            paymentDate: undefined,
+
+            areDocumentsFiledWithIndexPagination: undefined,
+            areDocumentsLegible: undefined,
+
+            isAppealMemoAnnexedForOtherSide: undefined,
+            isAppealMemoServedByPostCourier: undefined,
+
+            isVakalatnamaAuthorizationProper: undefined,
+            isContactOnRecord: undefined,
         },
     });
 
@@ -70,8 +110,12 @@ export default function RegistrarAppealDetailPage(props: Props) {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const createChecklistMutation = useMutation({
-        mutationFn: (data: CreateChecklistInput) =>
+    const createChecklistMutation = useMutation<
+        unknown,
+        Error,
+        UpdateAppealScrutinyOutput
+    >({
+        mutationFn: (data: UpdateAppealScrutinyInput) =>
             apiFetch(`/registrar/appeals/${id}/checklist`, {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -206,6 +250,7 @@ export default function RegistrarAppealDetailPage(props: Props) {
             {!appeal.appealChecklist && (
                 <ChecklistCard
                     form={checklistForm}
+                    appeal={appeal}
                     createChecklistMutation={createChecklistMutation}
                 />
             )}
