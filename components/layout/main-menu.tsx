@@ -1,10 +1,16 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import MenuItem from './menu-item';
 import MenuTitle from './menu-title';
-import Link from 'next/link';
+
 import { SunDimIcon } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import type { RoleType } from '@/types/role';
+import { Button } from '../ui/button';
+import { apiFetch } from '@/lib/api';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { getErrorMessage } from '@/utils/getErrorMessage';
+import { useRouter } from 'next/navigation';
 
 export default function MainMenu() {
     const user = useAuthStore((state) => state.user);
@@ -57,6 +63,24 @@ export default function MainMenu() {
         item.roles.some((role) => user?.roles.includes(role)),
     );
 
+    const router = useRouter();
+    const logout = useAuthStore((state) => state.logout);
+
+    const logoutMutation = useMutation({
+        mutationFn: () =>
+            apiFetch('/auth/logout', {
+                method: 'GET',
+            }),
+        onSuccess: () => {
+            logout();
+            toast.success('Logout successful!');
+            router.push('/login');
+        },
+        onError: (error) => {
+            toast.error(getErrorMessage(error));
+        },
+    });
+
     return (
         <nav className="bg-muted p-4 border-r overflow-y-auto flex flex-col">
             {/* <div className="border-b border-border pb-4"> */}
@@ -80,9 +104,15 @@ export default function MainMenu() {
                             .join('')}
                     </AvatarFallback>
                 </Avatar>
-                <Link href="/" className="hover:underline">
+
+                <Button
+                    className="cursor-pointer"
+                    variant="ghost"
+                    onClick={() => logoutMutation.mutate()}
+                    disabled={logoutMutation.isPending}
+                >
                     Logout
-                </Link>
+                </Button>
                 <button className="ml-auto">
                     <SunDimIcon />
                 </button>
