@@ -13,7 +13,7 @@ import { AlertTriangleIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Script from 'next/script';
 
-import { use } from 'react';
+import { use, useEffect } from 'react';
 import { toast } from 'sonner';
 import {
     CreateOrderResponse,
@@ -170,6 +170,12 @@ export default function PaymentPage(props: Props) {
         queryFn: () => apiFetch(`/appeals/${id}`),
     });
 
+    useEffect(() => {
+        if (appeal && appeal.status !== 'DRAFT') {
+            router.replace(`/appeals/${appeal.id}`);
+        }
+    }, [appeal, router]);
+
     if (error) {
         return (
             <Card>
@@ -197,6 +203,10 @@ export default function PaymentPage(props: Props) {
                 </CardHeader>
             </Card>
         );
+    }
+
+    if (appeal.status !== 'DRAFT') {
+        return null;
     }
 
     return (
