@@ -17,8 +17,7 @@ import { apiFetch } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { queryKeys } from '@/lib/queryKeys';
+import { useMutation } from '@tanstack/react-query';
 
 import { AppellantSection } from '@/components/appeals/form/AppellantSection';
 import { FormInput, formSchema } from './schemas';
@@ -26,10 +25,10 @@ import RespondentSection from '@/components/appeals/form/RespondentSection';
 import { AppealDetailsSection } from '@/components/appeals/form/AppealDetailsSection';
 import { AppealDocumentSection } from '@/components/appeals/form/AppealDocumentSection';
 import { createAppealFormData } from './createAppealFormData';
+import { AppealDetail } from '@/types/appeal';
 
 export default function FilePage() {
     const router = useRouter();
-    const queryClient = useQueryClient();
 
     const submitAppeal = (data: FormInput) => {
         const formData = createAppealFormData(data);
@@ -40,16 +39,12 @@ export default function FilePage() {
         });
     };
 
-    const createAppealMutation = useMutation({
+    const createAppealMutation = useMutation<AppealDetail, Error, FormInput>({
         mutationFn: (data: FormInput) => submitAppeal(data),
 
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({
-                queryKey: queryKeys.appeals,
-            });
-
+        onSuccess: async (appeal) => {
             toast.success('Appeal filed successfully.');
-            router.push('/appeals');
+            router.push(`/appeals/${appeal.id}/payment`);
         },
 
         onError: (error) => {
