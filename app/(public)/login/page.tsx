@@ -9,7 +9,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { PersonStandingIcon } from 'lucide-react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -30,6 +29,7 @@ import { getDefaultRoute } from '@/utils/getDefaultRoute';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useMutation } from '@tanstack/react-query';
+import Image from 'next/image';
 
 type LoginInput = z.infer<typeof formSchema>;
 
@@ -77,7 +77,13 @@ export default function LoginPage() {
 
     return (
         <>
-            <PersonStandingIcon size={50} />
+            <Image
+                src="/logo-reat.png"
+                alt="Assam REAT logo"
+                width={220}
+                height={220}
+                className="mx-auto"
+            />
             <Card className="w-full max-w-sm">
                 <CardHeader>
                     <CardTitle>Login</CardTitle>

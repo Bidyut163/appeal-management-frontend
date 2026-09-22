@@ -9,7 +9,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { PersonStandingIcon } from 'lucide-react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -29,6 +28,7 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useMutation } from '@tanstack/react-query';
 import { signupSchema, type SignupInput } from './schemas';
+import Image from 'next/image';
 
 export default function SignupPage() {
     const form = useForm<SignupInput>({
@@ -66,7 +66,13 @@ export default function SignupPage() {
 
     return (
         <>
-            <PersonStandingIcon size={50} />
+            <Image
+                src="/logo-reat.png"
+                alt="Assam REAT logo"
+                width={220}
+                height={220}
+                className="mx-auto"
+            />
             <Card className="w-full max-w-sm">
                 <CardHeader>
                     <CardTitle>Signup</CardTitle>
