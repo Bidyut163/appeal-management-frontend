@@ -161,12 +161,14 @@ export default function AppealDetail({ appeal }: Props) {
                 <h2 className="text-base font-semibold text-muted-foreground">
                     Interim order, if prayed for
                 </h2>
+                <p className="text-muted-foreground">
+                    Pending final decision on the appeal, the appellant seeks
+                    issue of the following interim order:
+                </p>
 
-                <InfoRow
-                    label="Pending final decision on the appeal, the appellant seeks issue of the following
-                                interim order:"
-                    value={appeal.interimReliefRequested || '—'}
-                />
+                <div className="py-2">
+                    {appeal.interimReliefRequested || '—'}
+                </div>
             </section>
             {/* Matter pending with other court */}
             <section className="space-y-2 border-b pb-4 last:border-none">
