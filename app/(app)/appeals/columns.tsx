@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/utils/formatDate';
 import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpRightIcon } from 'lucide-react';
 import Link from 'next/link';
 
 // This type is used to define the shape of our data.
@@ -20,7 +21,7 @@ export type Appeal = {
         | 'WITH_REGISTRAR'
         | 'REVERTED_TO_APPELLANT'
         | 'UNDER_HEARING'
-        | 'CLOSED'
+        | 'DISPOSED'
         | 'REJECTED';
 };
 
@@ -39,50 +40,86 @@ export type Appeal = {
 //     }
 // }
 
-function getAppealStatusVariant(
-    status: Appeal['status'],
-): 'success' | 'pending' | 'default' | 'failed' {
-    switch (status) {
-        case 'DRAFT':
-            return 'pending';
-        case 'UNDER_VERIFICATION':
-            return 'default';
-        case 'WITH_REGISTRAR':
-            return 'default';
-        case 'REVERTED_TO_APPELLANT':
-            return 'default';
-        case 'UNDER_HEARING':
-            return 'success';
-        case 'CLOSED':
-            return 'success';
-        case 'REJECTED':
-            return 'failed';
-        default:
-            return 'pending';
+const statusConfig: Record<
+    Appeal['status'],
+    {
+        label: string;
+        variant:
+            | 'secondary'
+            | 'info'
+            | 'registrar'
+            | 'warning'
+            | 'hearing'
+            | 'success'
+            | 'destructive';
     }
-}
-
-function formatStatus(status: string) {
-    return status.replaceAll('_', ' ');
-}
+> = {
+    DRAFT: {
+        label: 'Draft',
+        variant: 'secondary',
+    },
+    UNDER_VERIFICATION: {
+        label: 'Under Verification',
+        variant: 'info',
+    },
+    WITH_REGISTRAR: {
+        label: 'With Registrar',
+        variant: 'registrar',
+    },
+    REVERTED_TO_APPELLANT: {
+        label: 'Reverted',
+        variant: 'warning',
+    },
+    UNDER_HEARING: {
+        label: 'Under Hearing',
+        variant: 'hearing',
+    },
+    DISPOSED: {
+        label: 'Disposed',
+        variant: 'success',
+    },
+    REJECTED: {
+        label: 'Rejected',
+        variant: 'destructive',
+    },
+};
 
 export const columns: ColumnDef<Appeal>[] = [
     {
         accessorKey: 'id',
         header: 'Appeal ID',
+        cell: ({ row }) => (
+            <span className="font-semibold tabular-nums text-foreground">
+                #{row.original.id}
+            </span>
+        ),
     },
     {
         accessorKey: 'appellantName',
         header: 'Appellant Name',
+        cell: ({ row }) => (
+            <span className="font-medium text-foreground">
+                {row.original.appellantName}
+            </span>
+        ),
     },
     {
         accessorKey: 'respondentName',
         header: 'Respondent Name',
+        cell: ({ row }) => (
+            <span className="text-muted-foreground">
+                {row.original.respondentName}
+            </span>
+        ),
     },
     {
         accessorKey: 'createdAt',
         header: 'Filed On',
-        cell: ({ row }) => formatDate(row.original.createdAt),
+        cell: ({ row }) => (
+            <span className="whitespace-nowrap text-sm text-muted-foreground">
+                {formatDate(row.original.createdAt)}
+            </span>
+        ),
     },
 
     // {
@@ -109,33 +146,27 @@ export const columns: ColumnDef<Appeal>[] = [
         accessorKey: 'status',
         header: 'Status',
         cell: ({ row }) => {
-            // const status = row.getValue(
-            //     'appeal_status',
-            // ) as Appeal['appeal_status'];
-
-            const status = row.original.status;
-            return (
-                <Badge
-                    variant={getAppealStatusVariant(status)}
-                    className="capitalize"
-                >
-                    {formatStatus(status)}
-                </Badge>
-            );
+            const status = statusConfig[row.original.status];
+            return <Badge variant={status.variant}>{status.label}</Badge>;
         },
     },
     {
         id: 'actions',
-        header: 'Actions',
+        header: () => <div className="text-right">Actions</div>,
         cell: ({ row }) => {
             const { id, status } = row.original;
+
             return (
-                <div className="flex gap-2">
-                    <Button variant="outline" asChild>
-                        <Link href={`/appeals/${id}`}>View</Link>
+                <div className="flex justify-end gap-2">
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href={`/appeals/${id}`}>
+                            View Details
+                            <ArrowUpRightIcon className="ml-1 h-3.5 w-3.5" />
+                        </Link>
                     </Button>
+
                     {status === 'REVERTED_TO_APPELLANT' && (
-                        <Button asChild>
+                        <Button size="sm" asChild>
                             <Link href={`/appeals/${id}/edit`}>
                                 Edit & Resubmit
                             </Link>
