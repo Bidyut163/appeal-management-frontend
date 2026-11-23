@@ -11,20 +11,20 @@ interface Props {
 
 export default function AppealHeader({ id, status }: Props) {
     return (
-        <CardHeader>
-            <CardTitle className="flex items-start justify-between">
-                <div>
-                    <h1 className="text-xl font-semibold">Appeal #{id}</h1>
+        <CardHeader className="border-b px-6 pb-5">
+            <CardTitle className="flex items-center justify-between">
+                <h1 className="text-xl font-semibold tracking-tight">
+                    Appeal #{id}
+                </h1>
 
-                    <div className="mt-1 flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">
-                            Status:
-                        </span>
+                <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">
+                        Status:
+                    </span>
 
-                        <Badge variant={getAppealStatusVariant(status)}>
-                            {formatStatus(status)}
-                        </Badge>
-                    </div>
+                    <Badge variant={getAppealStatusVariant(status)}>
+                        {formatStatus(status)}
+                    </Badge>
                 </div>
             </CardTitle>
         </CardHeader>

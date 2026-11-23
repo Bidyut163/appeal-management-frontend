@@ -6,9 +6,64 @@ interface Props {
 
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
     return (
-        <div className="flex gap-8 py-3 border-b last:border-none">
-            <span className="w-50 text-muted-foreground">{label}</span>
-            <span className="font-medium">{value}</span>
+        // <div className="grid grid-cols-1 gap-2 py-4 border-b last:border-none sm:grid-cols-[240px_minmax(0,1fr)] sm:gap-8">
+        <div className="grid grid-cols-1 gap-2 py-4 border-b last:border-none sm:grid-cols-[minmax(0,320px)_1fr] sm:gap-8">
+            <span className="text-sm text-muted-foreground">{label}</span>
+            {/* <span className="text-sm font-medium leading-relaxed wrap-break-word">
+                {value}
+            </span> */}
+            <div className="min-w-0 wrap-break-word font-medium">{value}</div>
+        </div>
+    );
+}
+
+function PartyCard({
+    title,
+    name,
+    addressLabel,
+    address,
+    serviceAddress,
+    mobile,
+    email,
+}: {
+    title: string;
+    name: string;
+    addressLabel: string;
+    address: string;
+    serviceAddress: string;
+    mobile: string;
+    email: string;
+}) {
+    return (
+        <div className="rounded-lg border p-5 space-y-4">
+            <div>
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                    {title}
+                </h3>
+                <p className="mt-1 text-lg font-semibold">{name}</p>
+            </div>
+
+            <div className="space-y-3 text-sm">
+                <div>
+                    <p className="text-muted-foreground">{addressLabel}</p>
+                    <p className="mt-1 font-medium">{address || '—'}</p>
+                </div>
+
+                <div>
+                    <p className="text-muted-foreground">Service Address</p>
+                    <p className="mt-1 font-medium">{serviceAddress || '—'}</p>
+                </div>
+
+                <div>
+                    <p className="text-muted-foreground">Mobile Number</p>
+                    <p className="mt-1 font-medium">{mobile || '—'}</p>
+                </div>
+
+                <div>
+                    <p className="text-muted-foreground">Email Address</p>
+                    <p className="mt-1 font-medium break-all">{email || '—'}</p>
+                </div>
+            </div>
         </div>
     );
 }
@@ -17,170 +72,128 @@ export default function AppealDetail({ appeal }: Props) {
     return (
         <>
             {/* Parties */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Parties
-                </h2>
 
-                <InfoRow label="Appellant Name" value={appeal.appellantName} />
-                <InfoRow
-                    label="Respondent Name"
-                    value={appeal.respondentName}
-                />
-            </section>
+            <section className="space-y-4">
+                <h2 className="text-lg font-semibold">Parties</h2>
 
-            {/* Appellant Address */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Appellant Address
-                </h2>
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <PartyCard
+                        title="Appellant"
+                        addressLabel="Residential Address"
+                        name={appeal.appellantName}
+                        address={appeal.appellantResidentialAddressLine1}
+                        serviceAddress={appeal.appellantServiceAddressLine1}
+                        mobile={appeal.appellantMobileNumber}
+                        email={appeal.appellantEmailAddress}
+                    />
 
-                <InfoRow
-                    label="Appellant Residential Address:"
-                    value={appeal.appellantResidentialAddressLine1}
-                />
-                <InfoRow
-                    label="Appellant Service Address:"
-                    value={appeal.appellantServiceAddressLine1}
-                />
-            </section>
-
-            {/* Appellant Contact */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Appellant Contact
-                </h2>
-
-                <InfoRow
-                    label="Mobile Number:"
-                    value={appeal.appellantMobileNumber}
-                />
-                <InfoRow
-                    label="Email Address:"
-                    value={appeal.appellantEmailAddress}
-                />
-            </section>
-
-            {/* Respondent Address */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Respondent Address
-                </h2>
-
-                <InfoRow
-                    label="Respondent Office Address:"
-                    value={appeal.respondentOfficeAddressLine1}
-                />
-
-                <InfoRow
-                    label="Respondent Service Address:"
-                    value={appeal.respondentServiceAddressLine1}
-                />
-            </section>
-
-            {/* Respondent Contact */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Respondent Contact
-                </h2>
-
-                <InfoRow
-                    label="Mobile Number:"
-                    value={appeal.respondentMobileNumber}
-                />
-                <InfoRow
-                    label="Email Address:"
-                    value={appeal.respondentEmailAddress}
-                />
+                    <PartyCard
+                        title="Respondent"
+                        addressLabel="Office Address"
+                        name={appeal.respondentName}
+                        address={appeal.respondentOfficeAddressLine1}
+                        serviceAddress={appeal.respondentServiceAddressLine1}
+                        mobile={appeal.respondentMobileNumber}
+                        email={appeal.respondentEmailAddress}
+                    />
+                </div>
             </section>
 
             {/* Appeal Details  */}
+            <div className="mt-8 border-t pt-6">
+                {/* Project Registration Number */}
+                <section className="space-y-3 border-b py-5 first:pt-0 last:border-b-0">
+                    <h2 className="text-base font-semibold tracking-tight text-foreground">
+                        Jurisdiction of the Appellant Tribunal
+                    </h2>
 
-            {/* Project Registration Number */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Jurisdiction of the Appellant Tribunal
-                </h2>
+                    <p>
+                        The appellant declares that the subject matter of the
+                        appeal falls within the jurisdiction of the Appellate
+                        Tribunal.
+                    </p>
 
-                <p>
-                    The appellant declares that the subject matter of the appeal
-                    falls within the jurisdiction of the Appellate Tribunal.
-                </p>
+                    <InfoRow
+                        label="Project Registration Number: "
+                        value={appeal.projectRegistrationNumber}
+                    />
+                </section>
 
-                <InfoRow
-                    label="Project Registration Number: "
-                    value={appeal.projectRegistrationNumber}
-                />
-            </section>
+                {/* Limitation */}
+                <section className="space-y-3 border-b py-5 first:pt-0 last:border-b-0">
+                    <h2 className="text-base font-semibold tracking-tight text-foreground">
+                        Limitation
+                    </h2>
 
-            {/* Limitation */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Limitation
-                </h2>
-
-                <InfoRow
-                    label="The appellant declares that the appeal is within the
+                    <InfoRow
+                        label="The appellant declares that the appeal is within the
                         limitation specified in subsection (2) of section 44."
-                    value={appeal.isFiledWithinLimitation ? 'Yes' : 'No'}
-                />
+                        value={appeal.isFiledWithinLimitation ? 'Yes' : 'No'}
+                    />
 
-                <InfoRow
-                    label="If the appeal is filed after the expiry of the limitation period specified under subsection (2) of section 44 specify reasons for delay."
-                    value={appeal.delayReason || '—'}
-                />
-            </section>
+                    <InfoRow
+                        label="If the appeal is filed after the expiry of the limitation period specified under subsection (2) of section 44 specify reasons for delay."
+                        value={appeal.delayReason || '—'}
+                    />
+                </section>
 
-            {/* Facts of case */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Facts of case
-                </h2>
-                <div className="py-2">{appeal.factsOfCase}</div>
-            </section>
+                {/* Facts of case */}
+                <section className="space-y-3 border-b py-5 first:pt-0 last:border-b-0">
+                    <h2 className="text-base font-semibold tracking-tight text-foreground">
+                        Facts of case
+                    </h2>
+                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                        {appeal.factsOfCase}
+                    </div>
+                </section>
 
-            {/* Grounds of appeal */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Grounds of Appeal
-                </h2>
-                <div className="py-2">{appeal.groundsOfAppeal}</div>
-            </section>
+                {/* Grounds of appeal */}
+                <section className="space-y-3 border-b py-5 first:pt-0 last:border-b-0">
+                    <h2 className="text-base font-semibold tracking-tight text-foreground">
+                        Grounds of Appeal
+                    </h2>
+                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                        {appeal.groundsOfAppeal}
+                    </div>
+                </section>
 
-            {/* Relief Sought */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Relief(s) sought
-                </h2>
-                <div className="py-2">{appeal.reliefSought}</div>
-            </section>
+                {/* Relief Sought */}
+                <section className="space-y-3 border-b py-5 first:pt-0 last:border-b-0">
+                    <h2 className="text-base font-semibold tracking-tight text-foreground">
+                        Relief(s) sought
+                    </h2>
+                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                        {appeal.reliefSought}
+                    </div>
+                </section>
 
-            {/*  */}
-            {/* Interim order */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Interim order, if prayed for
-                </h2>
-                <p className="text-muted-foreground">
-                    Pending final decision on the appeal, the appellant seeks
-                    issue of the following interim order:
-                </p>
+                {/*  */}
+                {/* Interim order */}
+                <section className="space-y-3 border-b py-5 first:pt-0 last:border-b-0">
+                    <h2 className="text-base font-semibold tracking-tight text-foreground">
+                        Interim order, if prayed for
+                    </h2>
+                    <p className="text-muted-foreground">
+                        Pending final decision on the appeal, the appellant
+                        seeks issue of the following interim order:
+                    </p>
 
-                <div className="py-2">
-                    {appeal.interimReliefRequested || '—'}
-                </div>
-            </section>
-            {/* Matter pending with other court */}
-            <section className="space-y-2 border-b pb-4 last:border-none">
-                <h2 className="text-base font-semibold text-muted-foreground">
-                    Matter not pending with any other court, etc.
-                </h2>
+                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                        {appeal.interimReliefRequested || '—'}
+                    </div>
+                </section>
+                {/* Matter pending with other court */}
+                <section className="space-y-3 border-b py-5 first:pt-0 last:border-b-0">
+                    <h2 className="text-base font-semibold tracking-tight text-foreground">
+                        Matter not pending with any other court, etc.
+                    </h2>
 
-                <InfoRow
-                    label="Matter not pending with any other court, etc:"
-                    value={appeal.isMatterPendingInCourt ? 'Yes' : 'No'}
-                />
-            </section>
+                    <InfoRow
+                        label="Matter not pending with any other court, etc:"
+                        value={appeal.isMatterPendingInCourt ? 'Yes' : 'No'}
+                    />
+                </section>
+            </div>
         </>
     );
 }
