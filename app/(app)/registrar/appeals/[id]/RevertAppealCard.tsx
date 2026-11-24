@@ -1,5 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import {
     Dialog,
     DialogClose,
@@ -284,9 +290,13 @@ export default function RevertAppealCard({
     };
 
     return (
-        <Card className="mt-4 max-w-4xl">
-            <CardHeader>
-                <CardTitle>Revert back to appellant</CardTitle>
+        <Card className="mt-4">
+            <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Return to Appellant</CardTitle>
+                <CardDescription>
+                    Request corrections to the appeal before proceeding with
+                    scrutiny.
+                </CardDescription>
             </CardHeader>
             <CardContent>
                 <Dialog>
@@ -296,13 +306,13 @@ export default function RevertAppealCard({
                         onSubmit={form.handleSubmit(handleSubmitRevert)}
                     >
                         <DialogTrigger asChild>
-                            <Button>Revert back to appellant</Button>
+                            <Button>Request Corrections</Button>
                         </DialogTrigger>
 
-                        <DialogContent className="sm:max-w-sm">
+                        <DialogContent className="sm:max-w-lg">
                             <DialogHeader>
                                 <DialogTitle>
-                                    Revert back to appellant?
+                                    Request corrections from appellant?
                                 </DialogTitle>
                                 <DialogDescription>
                                     Please add a reason and respective fields
@@ -326,7 +336,8 @@ export default function RevertAppealCard({
                                                 aria-invalid={
                                                     fieldState.invalid
                                                 }
-                                                placeholder="Revert reason"
+                                                placeholder="Describe the corrections required..."
+                                                className="min-h-28 resize-y"
                                             />
                                             {fieldState.invalid && (
                                                 <FieldError
@@ -381,17 +392,22 @@ export default function RevertAppealCard({
                                         {fields.map((field, index) => (
                                             <div
                                                 key={field.id}
-                                                className="flex items-center justify-between rounded-md border p-2"
+                                                // className="flex items-center justify-between rounded-md border p-2"
+                                                className="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-3 py-2"
                                             >
-                                                <span>{field.label}</span>
+                                                <span className="text-sm font-medium">
+                                                    {field.label}
+                                                </span>
                                                 <Button
                                                     type="button"
                                                     variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 shrink-0 text-muted-foreground hover:text-destructive"
                                                     onClick={() =>
                                                         remove(index)
                                                     }
                                                 >
-                                                    <X />
+                                                    <X className="h-4 w-4" />
                                                 </Button>
                                             </div>
                                         ))}
@@ -417,7 +433,7 @@ export default function RevertAppealCard({
                                     // disabled={form.formState.isSubmitting}
                                     disabled={revertAppealMutation.isPending}
                                 >
-                                    Revert back to appellant
+                                    Send Correction Request
                                 </Button>
                             </DialogFooter>
                         </DialogContent>

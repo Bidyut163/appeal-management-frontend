@@ -33,8 +33,10 @@ export function BooleanRadioField<T extends FieldValues>({
     id,
 }: BooleanRadioFieldProps<T>) {
     return (
-        <FieldSet>
-            <FieldTitle>{label}</FieldTitle>
+        <FieldSet className="space-y-3">
+            <FieldTitle className="text-sm font-medium leading-relaxed">
+                {label}
+            </FieldTitle>
 
             <RadioGroup
                 name={field.name}
@@ -42,15 +44,24 @@ export function BooleanRadioField<T extends FieldValues>({
                     field.value === undefined ? '' : field.value ? 'yes' : 'no'
                 }
                 onValueChange={(value) => field.onChange(value === 'yes')}
+                className="grid grid-cols-2 gap-3"
+                aria-invalid={fieldState.invalid}
             >
                 {options.map((option) => (
-                    <FieldLabel key={option.id} htmlFor={`${id}-${option.id}`}>
+                    <FieldLabel
+                        key={option.id}
+                        htmlFor={`${id}-${option.id}`}
+                        className="cursor-pointer"
+                    >
                         <Field
                             orientation="horizontal"
                             data-invalid={fieldState.invalid}
+                            className="min-h-11 rounded-lg border px-4 py-3 transition-colors hover:bg-muted/50  has-checked:border-primary has-checked:bg-primary/5"
                         >
                             <FieldContent>
-                                <FieldTitle>{option.title}</FieldTitle>
+                                <FieldTitle className="font-medium">
+                                    {option.title}
+                                </FieldTitle>
                             </FieldContent>
 
                             <RadioGroupItem
