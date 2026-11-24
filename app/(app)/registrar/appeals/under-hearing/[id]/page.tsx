@@ -201,6 +201,11 @@ export default function AppealUnderHearingPage(props: Props) {
                     }
                 />
 
+                <DisposeAppealCard
+                    form={disposeForm}
+                    disposeAppealMutation={disposeAppealMutation}
+                />
+
                 <AppealDetailComponent appeal={appeal} />
                 {/* Payment */}
                 {/* <section className="space-y-2 border-b pb-4 last:border-none">
@@ -221,10 +226,6 @@ export default function AppealUnderHearingPage(props: Props) {
                     <InfoRow label="Payment Mode" value={payment_mode} />
                 </section> */}
                 <AuditHistory appealId={id} />
-                <DisposeAppealCard
-                    form={disposeForm}
-                    disposeAppealMutation={disposeAppealMutation}
-                />
             </CardContent>
         </Card>
     );

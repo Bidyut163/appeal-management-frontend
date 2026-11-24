@@ -8,11 +8,15 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
     return (
         // <div className="grid grid-cols-1 gap-2 py-4 border-b last:border-none sm:grid-cols-[240px_minmax(0,1fr)] sm:gap-8">
         <div className="grid grid-cols-1 gap-2 py-4 border-b last:border-none sm:grid-cols-[minmax(0,320px)_1fr] sm:gap-8">
-            <span className="text-sm text-muted-foreground">{label}</span>
+            <span className="text-sm leading-relaxed text-muted-foreground">
+                {label}
+            </span>
             {/* <span className="text-sm font-medium leading-relaxed wrap-break-word">
                 {value}
             </span> */}
-            <div className="min-w-0 wrap-break-word font-medium">{value}</div>
+            <div className="min-w-0 text-sm font-medium leading-relaxed wrap-break-word">
+                {value}
+            </div>
         </div>
     );
 }
@@ -142,7 +146,7 @@ export default function AppealDetail({ appeal }: Props) {
                     <h2 className="text-base font-semibold tracking-tight text-foreground">
                         Facts of case
                     </h2>
-                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                    <div className="max-w-5xl whitespace-pre-wrap wrap-break-word py-2 leading-7 text-foreground">
                         {appeal.factsOfCase}
                     </div>
                 </section>
@@ -152,7 +156,7 @@ export default function AppealDetail({ appeal }: Props) {
                     <h2 className="text-base font-semibold tracking-tight text-foreground">
                         Grounds of Appeal
                     </h2>
-                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                    <div className="max-w-5xl whitespace-pre-wrap wrap-break-word py-2 leading-7 text-foreground">
                         {appeal.groundsOfAppeal}
                     </div>
                 </section>
@@ -162,7 +166,7 @@ export default function AppealDetail({ appeal }: Props) {
                     <h2 className="text-base font-semibold tracking-tight text-foreground">
                         Relief(s) sought
                     </h2>
-                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                    <div className="max-w-5xl whitespace-pre-wrap wrap-break-word py-2 leading-7 text-foreground">
                         {appeal.reliefSought}
                     </div>
                 </section>
@@ -178,7 +182,7 @@ export default function AppealDetail({ appeal }: Props) {
                         seeks issue of the following interim order:
                     </p>
 
-                    <div className="whitespace-pre-wrap wrap-break-word py-2 leading-relaxed">
+                    <div className="max-w-5xl whitespace-pre-wrap wrap-break-word py-2 leading-7 text-foreground">
                         {appeal.interimReliefRequested || '—'}
                     </div>
                 </section>
