@@ -36,16 +36,20 @@ export function DateField<T extends FieldValues>({
                 <PopoverTrigger asChild>
                     <Button
                         id={id}
+                        type="button"
                         variant="outline"
-                        className="justify-between font-normal pr-1"
+                        className="w-full justify-between font-normal"
+                        aria-invalid={fieldState.invalid}
                     >
                         {field.value ? (
                             format(field.value, 'PPP')
                         ) : (
-                            <span>Select date</span>
+                            <span className="text-muted-foreground">
+                                Select date
+                            </span>
                         )}
 
-                        <CalendarCheckIcon />
+                        <CalendarCheckIcon className="size-4 text-muted-foreground" />
                     </Button>
                 </PopoverTrigger>
 
