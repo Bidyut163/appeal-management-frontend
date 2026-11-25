@@ -130,33 +130,56 @@ export default function FilePage() {
     }
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>File Appeal(Form C)</CardTitle>
-                <CardDescription>
-                    Fill out the following form C to registar an appeal
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col gap-4"
-                >
-                    <FieldGroup>
-                        <AppellantSection form={form} />
-                        <RespondentSection form={form} />
-                        <AppealDetailsSection form={form} />
-                        <AppealDocumentSection form={form} />
-                    </FieldGroup>
-                    <Button
-                        className="self-start"
-                        type="submit"
-                        disabled={createAppealMutation.isPending}
+        <div className="mx-auto w-full max-w-6xl space-y-6">
+            {/* Page heading */}
+            <div className="space-y-2">
+                <h1 className="text-2xl font-semibold tracking-tight">
+                    File an Appeal
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                    Complete Form C to submit your appeal to the Assam Real
+                    Estate Appellate Tribunal.
+                </p>
+            </div>
+
+            {/* Form container */}
+            <Card className="overflow-hidden rounded-xl border shadow-sm">
+                <CardHeader className="space-y-2 border-b bg-muted/20 px-6 py-5 md:px-8">
+                    <CardTitle className="text-xl">
+                        Form C — Application for Appeal
+                    </CardTitle>
+                    <CardDescription>
+                        Please provide the required particulars and supporting
+                        information below.
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent className="px-6 py-8 md:px-8">
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="flex flex-col gap-8"
                     >
-                        Submit
-                    </Button>
-                </form>
-            </CardContent>
-        </Card>
+                        <FieldGroup className="gap-8">
+                            <AppellantSection form={form} />
+                            <RespondentSection form={form} />
+                            <AppealDetailsSection form={form} />
+                            <AppealDocumentSection form={form} />
+                        </FieldGroup>
+
+                        <div className="flex justify-end border-t pt-6">
+                            <Button
+                                className="min-w-36"
+                                type="submit"
+                                disabled={createAppealMutation.isPending}
+                            >
+                                {createAppealMutation.isPending
+                                    ? 'Submitting...'
+                                    : 'Submit Appeal'}
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
     );
 }
