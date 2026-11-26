@@ -5,10 +5,11 @@ import MenuTitle from './menu-title';
 import type { LucideIcon } from 'lucide-react';
 import {
     CalendarClockIcon,
+    ClipboardCheckIcon,
     ClipboardListIcon,
     FileTextIcon,
     GavelIcon,
-    SunDimIcon,
+    LogOutIcon,
     UserPlusIcon,
     UsersIcon,
 } from 'lucide-react';
@@ -21,7 +22,11 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useRouter } from 'next/navigation';
 
-export default function MainMenu() {
+type MainMenuProps = {
+    onNavigate?: () => void;
+};
+
+export default function MainMenu({ onNavigate }: MainMenuProps) {
     const user = useAuthStore((state) => state.user);
 
     type MenuItem = {
@@ -32,36 +37,43 @@ export default function MainMenu() {
     };
 
     const menuItems: MenuItem[] = [
+        // Appellant
         {
-            label: 'File an appeal',
+            label: 'File an Appeal',
             href: '/appeals/file',
             roles: ['APPELLANT'],
             icon: FileTextIcon,
         },
         {
-            label: 'My appeals',
+            label: 'My Appeals',
             href: '/appeals',
             roles: ['APPELLANT'],
             icon: ClipboardListIcon,
         },
+
+        // Verifier
         {
-            label: 'Appeals',
+            label: 'Verification Queue',
             href: '/verifier',
             roles: ['VERIFIER'],
-            icon: GavelIcon,
+            icon: ClipboardCheckIcon,
         },
+
+        // Registrar
         {
-            label: 'Appeals',
+            label: 'Appeal Review',
             href: '/registrar',
             roles: ['REGISTRAR'],
             icon: GavelIcon,
         },
         {
-            label: 'Under Hearing',
+            label: 'Hearing Management',
             href: '/registrar/appeals/under-hearing',
             roles: ['REGISTRAR'],
             icon: CalendarClockIcon,
         },
+
+        // Admin
         {
             label: 'Officials',
             href: '/admin/users',
@@ -69,7 +81,7 @@ export default function MainMenu() {
             icon: UsersIcon,
         },
         {
-            label: 'Create an official',
+            label: 'Create an Official',
             href: '/admin/users/create',
             roles: ['ADMIN'],
             icon: UserPlusIcon,
@@ -99,41 +111,78 @@ export default function MainMenu() {
     });
 
     return (
-        <nav className="h-screen bg-muted p-4 border-r  flex flex-col">
+        <nav className="h-full min-h-screen bg-muted p-4 border-r flex flex-col">
             {/* <div className="border-b border-border pb-4"> */}
-            <div className="pb-4">
+            <div className="border-b border-border pb-5">
                 <MenuTitle />
             </div>
-            <div className="py-4 grow">
+            <div className="flex-1 space-y-1 py-5">
+                <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Workspace
+                </p>
+
                 {allowedItems.map((item) => (
-                    <MenuItem key={item.href} href={item.href}>
-                        <item.icon className="size-4" />
+                    <MenuItem
+                        key={item.href}
+                        href={item.href}
+                        onNavigate={onNavigate}
+                        excludePaths={
+                            item.href === '/registrar'
+                                ? ['/registrar/appeals/under-hearing']
+                                : item.href === '/appeals'
+                                  ? ['/appeals/file']
+                                  : item.href === '/admin/users'
+                                    ? ['/admin/users/create']
+                                    : []
+                        }
+                    >
+                        <item.icon className="size-4.5 shrink-0" />
                         {item.label}
                     </MenuItem>
                 ))}
             </div>
 
-            <div className="flex gap-2 items-center">
-                <Avatar>
-                    <AvatarFallback className="bg-primary text-white">
-                        {user?.name
-                            .split(' ')
-                            .map((word) => word[0])
-                            .join('')}
-                    </AvatarFallback>
-                </Avatar>
+            <div className="border-t border-border pt-4">
+                <div className="flex gap-3 items-center">
+                    <Avatar className="size-10 shrink-0">
+                        <AvatarFallback className="bg-primary text-white font-medium">
+                            {user?.name
+                                .split(' ')
+                                .map((word) => word[0])
+                                .join('')
+                                .slice(0, 2)
+                                .toUpperCase()}
+                        </AvatarFallback>
+                    </Avatar>
 
-                <Button
-                    className="cursor-pointer"
-                    variant="ghost"
-                    onClick={() => logoutMutation.mutate()}
-                    disabled={logoutMutation.isPending}
-                >
-                    Logout
-                </Button>
-                <button className="ml-auto">
-                    <SunDimIcon />
-                </button>
+                    <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-foreground">
+                            {user?.name}
+                        </p>
+
+                        <p className="truncate text-xs text-muted-foreground">
+                            {user?.roles
+                                .map(
+                                    (role) =>
+                                        role.charAt(0) +
+                                        role.slice(1).toLowerCase(),
+                                )
+                                .join(', ')}
+                        </p>
+                    </div>
+
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0 text-muted-foreground hover:text-destructive"
+                        onClick={() => logoutMutation.mutate()}
+                        disabled={logoutMutation.isPending}
+                        aria-label="Logout"
+                        title="Logout"
+                    >
+                        <LogOutIcon className="size-5" />
+                    </Button>
+                </div>
             </div>
         </nav>
     );
