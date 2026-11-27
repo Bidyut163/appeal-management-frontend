@@ -48,7 +48,7 @@ export const columns: ColumnDef<Appeal>[] = [
     },
     {
         id: 'actions',
-        header: 'Actions',
+        header: () => <div className="text-right">Actions</div>,
         cell: ({ row }) => (
             <div className="flex justify-end">
                 <Button variant="outline" size="sm" asChild>
