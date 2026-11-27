@@ -31,7 +31,39 @@ import { getErrorMessage } from '@/utils/getErrorMessage';
 import { useMutation } from '@tanstack/react-query';
 import Image from 'next/image';
 
+import {
+    UserRoundIcon,
+    ClipboardCheckIcon,
+    GavelIcon,
+    ShieldCheckIcon,
+} from 'lucide-react';
+
 type LoginInput = z.infer<typeof formSchema>;
+
+const DEMO_PASSWORD = 'password123'; // Use the password from your seed file
+
+const demoAccounts = [
+    {
+        label: 'Appellant',
+        email: 'appellant@example.com',
+        icon: UserRoundIcon,
+    },
+    {
+        label: 'Verifier',
+        email: 'verifier@example.com',
+        icon: ClipboardCheckIcon,
+    },
+    {
+        label: 'Registrar',
+        email: 'registrar@example.com',
+        icon: GavelIcon,
+    },
+    {
+        label: 'Admin',
+        email: 'admin@example.com',
+        icon: ShieldCheckIcon,
+    },
+];
 
 const formSchema = z.object({
     email: z.email('Invalid email'),
@@ -157,6 +189,56 @@ export default function LoginPage() {
                             Login
                         </Button>
                     </form>
+                    <div className="mt-5 space-y-3">
+                        <div className="flex items-center gap-3">
+                            <div className="h-px flex-1 bg-border" />
+                            <span className="text-xs font-medium text-muted-foreground">
+                                OR EXPLORE THE DEMO
+                            </span>
+                            <div className="h-px flex-1 bg-border" />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                            {demoAccounts.map((account) => {
+                                const Icon = account.icon;
+
+                                return (
+                                    <Button
+                                        key={account.email}
+                                        type="button"
+                                        variant="outline"
+                                        className="justify-start gap-2"
+                                        disabled={loginMutation.isPending}
+                                        onClick={() => {
+                                            form.setValue(
+                                                'email',
+                                                account.email,
+                                                {
+                                                    shouldValidate: true,
+                                                },
+                                            );
+
+                                            form.setValue(
+                                                'password',
+                                                DEMO_PASSWORD,
+                                                {
+                                                    shouldValidate: true,
+                                                },
+                                            );
+                                        }}
+                                    >
+                                        <Icon className="size-4 text-primary" />
+                                        {account.label}
+                                    </Button>
+                                );
+                            })}
+                        </div>
+
+                        <p className="text-center text-xs text-muted-foreground">
+                            Select a role to automatically fill in demo
+                            credentials.
+                        </p>
+                    </div>
                 </CardContent>
                 <CardFooter className="justify-between">
                     <small>Don&apos;t have an account?</small>
