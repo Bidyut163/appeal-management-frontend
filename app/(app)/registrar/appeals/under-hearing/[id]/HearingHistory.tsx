@@ -57,16 +57,29 @@ export const HearingHistory = (props: Props) => {
     const currentHearing = hearings[hearings.length - 1];
 
     return (
-        <section className="space-y-2 border-b pb-4">
-            <h2 className="text-base font-semibold text-muted-foreground">
-                Hearing History
-            </h2>
+        <section className="space-y-4 border-b pb-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold tracking-tight">
+                    Hearing History
+                </h2>
 
-            <div className="space-y-3">
+                <span className="text-sm text-muted-foreground">
+                    {hearings.length} hearings
+                </span>
+            </div>
+
+            <div className="divide-y rounded-lg border">
                 {hearings.map((hearing) => (
-                    <div key={hearing.id} className="rounded-md border p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
+                    <div
+                        key={hearing.id}
+                        className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted">
+                                <CalendarCheckIcon className="size-4 text-muted-foreground" />
+                            </div>
+
+                            <div className="space-y-1">
                                 <p className="font-medium">
                                     Hearing #{hearing.hearingNumber}
                                 </p>
@@ -74,155 +87,149 @@ export const HearingHistory = (props: Props) => {
                                     {formatDate(hearing.hearingDate)}
                                 </p>
                             </div>
+                        </div>
 
-                            <div className="flex flex-col gap-2 items-end">
-                                <Badge>{formatStatus(hearing.status)}</Badge>
-                                {hearing.id === currentHearing?.id &&
-                                    currentHearing?.status === 'SCHEDULED' && (
-                                        <Button
-                                            disabled={isCompletingHearing}
-                                            onClick={() =>
-                                                completeHearing(
-                                                    currentHearing.id,
-                                                )
-                                            }
-                                            className="cursor-pointer"
+                        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+                            <Badge>{formatStatus(hearing.status)}</Badge>
+                            {hearing.id === currentHearing?.id &&
+                                currentHearing?.status === 'SCHEDULED' && (
+                                    <Button
+                                        disabled={isCompletingHearing}
+                                        onClick={() =>
+                                            completeHearing(currentHearing.id)
+                                        }
+                                        className="cursor-pointer"
+                                    >
+                                        <CircleCheckBig />{' '}
+                                        {isCompletingHearing
+                                            ? 'Completing...'
+                                            : 'Complete Hearing'}
+                                    </Button>
+                                )}
+                            {hearing.id === currentHearing?.id &&
+                                currentHearing?.status === 'COMPLETED' && (
+                                    <Dialog>
+                                        <form
+                                            id="scheduleNextHearing-form"
+                                            onSubmit={form.handleSubmit(
+                                                scheduleNextHearing,
+                                            )}
                                         >
-                                            <CircleCheckBig />{' '}
-                                            {isCompletingHearing
-                                                ? 'Completing...'
-                                                : 'Complete Hearing'}
-                                        </Button>
-                                    )}
-                                {hearing.id === currentHearing?.id &&
-                                    currentHearing?.status === 'COMPLETED' && (
-                                        <Dialog>
-                                            <form
-                                                id="scheduleNextHearing-form"
-                                                onSubmit={form.handleSubmit(
-                                                    scheduleNextHearing,
-                                                )}
-                                            >
-                                                <DialogTrigger asChild>
-                                                    <Button>
+                                            <DialogTrigger asChild>
+                                                <Button>
+                                                    Schedule Next Hearing
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-sm">
+                                                <DialogHeader>
+                                                    <DialogTitle>
+                                                        Schedule Next Hearing!
+                                                    </DialogTitle>
+                                                    <DialogDescription>
+                                                        Please select next
+                                                        hearing date.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+
+                                                <FieldGroup>
+                                                    <Controller
+                                                        name="hearingDate"
+                                                        control={form.control}
+                                                        render={({
+                                                            field,
+                                                            fieldState,
+                                                        }) => (
+                                                            <Field
+                                                                data-invalid={
+                                                                    fieldState.invalid
+                                                                }
+                                                            >
+                                                                <FieldLabel htmlFor="hearingDate">
+                                                                    Date of
+                                                                    hearing
+                                                                </FieldLabel>
+
+                                                                <Popover>
+                                                                    <PopoverTrigger
+                                                                        asChild
+                                                                    >
+                                                                        <Button
+                                                                            id="hearingDate"
+                                                                            variant="outline"
+                                                                            className="justify-between font-normal pr-1"
+                                                                        >
+                                                                            {field.value ? (
+                                                                                format(
+                                                                                    field.value,
+                                                                                    'PPP',
+                                                                                )
+                                                                            ) : (
+                                                                                <span>
+                                                                                    Select
+                                                                                    date
+                                                                                </span>
+                                                                            )}
+
+                                                                            <CalendarCheckIcon />
+                                                                        </Button>
+                                                                    </PopoverTrigger>
+
+                                                                    <PopoverContent
+                                                                        className="w-auto p-0"
+                                                                        align="start"
+                                                                    >
+                                                                        <Calendar
+                                                                            mode="single"
+                                                                            selected={
+                                                                                field.value
+                                                                            }
+                                                                            onSelect={
+                                                                                field.onChange
+                                                                            }
+                                                                            defaultMonth={
+                                                                                field.value
+                                                                            }
+                                                                            fixedWeeks
+                                                                            weekStartsOn={
+                                                                                1
+                                                                            }
+                                                                            captionLayout="dropdown"
+                                                                        />
+                                                                    </PopoverContent>
+                                                                </Popover>
+                                                                {fieldState.invalid && (
+                                                                    <FieldError
+                                                                        errors={[
+                                                                            fieldState.error,
+                                                                        ]}
+                                                                    />
+                                                                )}
+                                                            </Field>
+                                                        )}
+                                                    />
+                                                </FieldGroup>
+
+                                                <DialogFooter>
+                                                    <DialogClose asChild>
+                                                        <Button variant="outline">
+                                                            Cancel
+                                                        </Button>
+                                                    </DialogClose>
+                                                    <Button
+                                                        type="submit"
+                                                        form="scheduleNextHearing-form"
+                                                        // disabled={form.formState.isSubmitting}
+                                                        disabled={
+                                                            isSchedulingNextHearing
+                                                        }
+                                                    >
                                                         Schedule Next Hearing
                                                     </Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="sm:max-w-sm">
-                                                    <DialogHeader>
-                                                        <DialogTitle>
-                                                            Schedule Next
-                                                            Hearing!
-                                                        </DialogTitle>
-                                                        <DialogDescription>
-                                                            Please select next
-                                                            hearing date.
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-
-                                                    <FieldGroup>
-                                                        <Controller
-                                                            name="hearingDate"
-                                                            control={
-                                                                form.control
-                                                            }
-                                                            render={({
-                                                                field,
-                                                                fieldState,
-                                                            }) => (
-                                                                <Field
-                                                                    data-invalid={
-                                                                        fieldState.invalid
-                                                                    }
-                                                                >
-                                                                    <FieldLabel htmlFor="hearingDate">
-                                                                        Date of
-                                                                        hearing
-                                                                    </FieldLabel>
-
-                                                                    <Popover>
-                                                                        <PopoverTrigger
-                                                                            asChild
-                                                                        >
-                                                                            <Button
-                                                                                id="hearingDate"
-                                                                                variant="outline"
-                                                                                className="justify-between font-normal pr-1"
-                                                                            >
-                                                                                {field.value ? (
-                                                                                    format(
-                                                                                        field.value,
-                                                                                        'PPP',
-                                                                                    )
-                                                                                ) : (
-                                                                                    <span>
-                                                                                        Select
-                                                                                        date
-                                                                                    </span>
-                                                                                )}
-
-                                                                                <CalendarCheckIcon />
-                                                                            </Button>
-                                                                        </PopoverTrigger>
-
-                                                                        <PopoverContent
-                                                                            className="w-auto p-0"
-                                                                            align="start"
-                                                                        >
-                                                                            <Calendar
-                                                                                mode="single"
-                                                                                selected={
-                                                                                    field.value
-                                                                                }
-                                                                                onSelect={
-                                                                                    field.onChange
-                                                                                }
-                                                                                defaultMonth={
-                                                                                    field.value
-                                                                                }
-                                                                                fixedWeeks
-                                                                                weekStartsOn={
-                                                                                    1
-                                                                                }
-                                                                                captionLayout="dropdown"
-                                                                            />
-                                                                        </PopoverContent>
-                                                                    </Popover>
-                                                                    {fieldState.invalid && (
-                                                                        <FieldError
-                                                                            errors={[
-                                                                                fieldState.error,
-                                                                            ]}
-                                                                        />
-                                                                    )}
-                                                                </Field>
-                                                            )}
-                                                        />
-                                                    </FieldGroup>
-
-                                                    <DialogFooter>
-                                                        <DialogClose asChild>
-                                                            <Button variant="outline">
-                                                                Cancel
-                                                            </Button>
-                                                        </DialogClose>
-                                                        <Button
-                                                            type="submit"
-                                                            form="scheduleNextHearing-form"
-                                                            // disabled={form.formState.isSubmitting}
-                                                            disabled={
-                                                                isSchedulingNextHearing
-                                                            }
-                                                        >
-                                                            Schedule Next
-                                                            Hearing
-                                                        </Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </form>
-                                        </Dialog>
-                                    )}
-                            </div>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </form>
+                                    </Dialog>
+                                )}
                         </div>
                     </div>
                 ))}

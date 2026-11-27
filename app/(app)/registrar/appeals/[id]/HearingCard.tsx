@@ -1,7 +1,13 @@
 import { format } from 'date-fns';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -60,12 +66,17 @@ export default function HearingCard({
     };
 
     return (
-        <Card className="mt-4 max-w-4xl">
+        <Card className="mt-4 w-full">
             <CardHeader>
                 <CardTitle>Send to hearing</CardTitle>
+
+                <CardDescription>
+                    Schedule a hearing for this appeal and provide any relevant
+                    remarks.
+                </CardDescription>
             </CardHeader>
             <CardContent>
-                <form id="hearing-form" className="flex flex-col gap-4">
+                <form id="hearing-form" className="flex flex-col gap-5">
                     <FieldGroup>
                         <Controller
                             name="hearingDate"
@@ -80,7 +91,7 @@ export default function HearingCard({
                                             <Button
                                                 id="hearingDate"
                                                 variant="outline"
-                                                className="justify-between font-normal pr-1"
+                                                className="w-full justify-between font-normal"
                                             >
                                                 {field.value ? (
                                                     format(field.value, 'PPP')
@@ -126,6 +137,7 @@ export default function HearingCard({
                                         id="registrarComments"
                                         aria-invalid={fieldState.invalid}
                                         placeholder="Registrar comment"
+                                        className="min-h-24 resize-y"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError

@@ -76,7 +76,7 @@ export default function AppealDetailPage(props: Props) {
     }
 
     return (
-        <Card className="max-w-4xl">
+        <Card className="max-w-6xl">
             <AppealHeader id={appeal.id} status={appeal.status} />
             <CardContent className="space-y-6">
                 {/* appeal detail */}

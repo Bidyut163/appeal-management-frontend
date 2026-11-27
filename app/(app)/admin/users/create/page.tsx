@@ -81,133 +81,146 @@ export default function CreateUsersPage() {
     }
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Create an official</CardTitle>
-                <CardDescription>
-                    Create a new registrar or verifier account.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form
-                    id="create-official-form"
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="flex flex-col gap-4"
-                >
-                    <FieldGroup>
-                        <Controller
-                            name="name"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="name">
-                                        Name of the official
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="name"
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="Name of the official"
-                                    />
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="email"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="email">
-                                        Email of the official
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="email"
-                                        type="email"
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="Email of the official"
-                                    />
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="password"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="password">
-                                        Password
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        type="password"
-                                        id="password"
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="********"
-                                        autoComplete="new-password"
-                                    />
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
-                                        />
-                                    )}
-                                </Field>
-                            )}
-                        />
-
-                        <Controller
-                            name="role"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="select-role">
-                                        Role of the official
-                                    </FieldLabel>
-                                    <Select
-                                        name={field.name}
-                                        value={field.value}
-                                        onValueChange={field.onChange}
-                                    >
-                                        <SelectTrigger
-                                            id="select-role"
+        <div className="mx-auto w-full max-w-2xl">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Create an official</CardTitle>
+                    <CardDescription>
+                        Create a new registrar or verifier account.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form
+                        id="create-official-form"
+                        onSubmit={form.handleSubmit(onSubmit)}
+                        className="flex flex-col gap-6"
+                    >
+                        <FieldGroup>
+                            <Controller
+                                name="name"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="name">
+                                            Name of the official
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="name"
                                             aria-invalid={fieldState.invalid}
-                                        >
-                                            <SelectValue placeholder="Select" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="REGISTRAR">
-                                                REGISTRAR
-                                            </SelectItem>
-                                            <SelectItem value="VERIFIER">
-                                                VERIFIER
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FieldDescription>
-                                        Assign the role for the official.
-                                    </FieldDescription>
-                                    {fieldState.invalid && (
-                                        <FieldError
-                                            errors={[fieldState.error]}
+                                            placeholder="Name of the official"
                                         />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                    </FieldGroup>
-                    <Button type="submit">Create official</Button>
-                </form>
-            </CardContent>
-        </Card>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="email"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="email">
+                                            Email of the official
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="email"
+                                            type="email"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="Email of the official"
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="password"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="password">
+                                            Password
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            type="password"
+                                            id="password"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="********"
+                                            autoComplete="new-password"
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="role"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="select-role">
+                                            Role of the official
+                                        </FieldLabel>
+                                        <Select
+                                            name={field.name}
+                                            value={field.value}
+                                            onValueChange={field.onChange}
+                                        >
+                                            <SelectTrigger
+                                                id="select-role"
+                                                aria-invalid={
+                                                    fieldState.invalid
+                                                }
+                                            >
+                                                <SelectValue placeholder="Select" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="REGISTRAR">
+                                                    REGISTRAR
+                                                </SelectItem>
+                                                <SelectItem value="VERIFIER">
+                                                    VERIFIER
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FieldDescription>
+                                            Assign the role for the official.
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError
+                                                errors={[fieldState.error]}
+                                            />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                        </FieldGroup>
+                        <div className="flex justify-end">
+                            <Button
+                                type="submit"
+                                disabled={createOfficialMutation.isPending}
+                            >
+                                {createOfficialMutation.isPending
+                                    ? 'Creating...'
+                                    : 'Create Official'}
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
     );
 }

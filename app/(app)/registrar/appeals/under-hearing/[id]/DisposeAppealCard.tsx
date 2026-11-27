@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     Dialog,
     DialogClose,
@@ -42,11 +42,18 @@ export default function DisposeAppealCard({
     };
 
     return (
-        <Card className="mt-4 max-w-4xl">
-            <CardHeader>
-                <CardTitle>Dispose Appeal</CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card className="mt-4">
+            <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-1">
+                    <h2 className="text-xl font-semibold tracking-tight">
+                        Dispose Appeal
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                        Record the final decision and complete the appeal
+                        process.
+                    </p>
+                </div>
+
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button>Dispose Appeal</Button>

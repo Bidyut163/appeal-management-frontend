@@ -36,6 +36,28 @@ const options = [
     },
 ] as const;
 
+function FormSectionHeading({
+    number,
+    title,
+    description,
+}: {
+    number: number;
+    title: string;
+    description?: string;
+}) {
+    return (
+        <div className="space-y-1 border-b pb-4">
+            <h3 className="text-base font-semibold tracking-tight">
+                {number}. {title}
+            </h3>
+
+            {description && (
+                <p className="text-sm text-muted-foreground">{description}</p>
+            )}
+        </div>
+    );
+}
+
 export const AppealDetailsSection = ({
     form,
     editableFields,
@@ -53,12 +75,12 @@ export const AppealDetailsSection = ({
 
     return (
         <>
-            <hr />
-            <h6>3. Jurisdiction of the Appellate Tribunal</h6>
-            <p>
-                The appellant declares that the subject matter of the appeal
-                falls within the jurisdiction of the Appellate Tribunal
-            </p>
+            <FormSectionHeading
+                number={3}
+                title="Jurisdiction of the Appellate Tribunal"
+                description="The appellant declares that the subject matter of the appeal
+                falls within the jurisdiction of the Appellate Tribunal"
+            />
 
             <Controller
                 name="projectRegistrationNumber"
@@ -85,7 +107,7 @@ export const AppealDetailsSection = ({
                 )}
             />
 
-            <h6>4. Limitation</h6>
+            <FormSectionHeading number={4} title="Limitation" />
 
             <Controller
                 name="isFiledWithinLimitation"
@@ -123,9 +145,13 @@ export const AppealDetailsSection = ({
                 )}
             />
 
-            <Separator />
-            <div className="text-center">OR</div>
-            <Separator />
+            <div className="flex items-center gap-4 py-2">
+                <Separator className="flex-1" />
+                <span className="text-xs font-medium text-muted-foreground">
+                    OR
+                </span>
+                <Separator className="flex-1" />
+            </div>
 
             <Controller
                 name="delayReason"
@@ -143,7 +169,7 @@ export const AppealDetailsSection = ({
                             id="delayReason"
                             aria-invalid={fieldState.invalid}
                             placeholder="Reasons for delay"
-                            className="min-h-30"
+                            className="min-h-32 resize-y"
                             disabled={
                                 isFiledWithinLimitation ||
                                 !isFieldEditable('delayReason')
@@ -156,7 +182,7 @@ export const AppealDetailsSection = ({
                 )}
             />
 
-            <h6>5. Facts of the case</h6>
+            <FormSectionHeading number={5} title="Facts of the case" />
 
             <Controller
                 name="factsOfCase"
@@ -175,7 +201,7 @@ export const AppealDetailsSection = ({
                             id="factsOfCase"
                             aria-invalid={fieldState.invalid}
                             placeholder="Facts of case"
-                            className="min-h-30"
+                            className="min-h-32 resize-y"
                             disabled={!isFieldEditable('factsOfCase')}
                         />
                         {fieldState.invalid && (
@@ -185,7 +211,7 @@ export const AppealDetailsSection = ({
                 )}
             />
 
-            <h6>6. Grounds of Appeal</h6>
+            <FormSectionHeading number={6} title="Grounds of Appeal" />
 
             <Controller
                 name="groundsOfAppeal"
@@ -201,7 +227,7 @@ export const AppealDetailsSection = ({
                             id="groundsOfAppeal"
                             aria-invalid={fieldState.invalid}
                             placeholder="Grounds of appeal"
-                            className="min-h-30"
+                            className="min-h-32 resize-y"
                             disabled={!isFieldEditable('groundsOfAppeal')}
                         />
                         {fieldState.invalid && (
@@ -211,7 +237,7 @@ export const AppealDetailsSection = ({
                 )}
             />
 
-            <h6>7. Relief(s) sought</h6>
+            <FormSectionHeading number={7} title="Relief(s) sought" />
 
             <Controller
                 name="reliefSought"
@@ -229,7 +255,7 @@ export const AppealDetailsSection = ({
                             id="reliefSought"
                             aria-invalid={fieldState.invalid}
                             placeholder="Relief sought"
-                            className="min-h-30"
+                            className="min-h-32 resize-y"
                             disabled={!isFieldEditable('reliefSought')}
                         />
                         {fieldState.invalid && (
@@ -238,7 +264,11 @@ export const AppealDetailsSection = ({
                     </Field>
                 )}
             />
-            <h6>8. Interim order, if prayed for</h6>
+
+            <FormSectionHeading
+                number={8}
+                title="Interim order, if prayed for"
+            />
 
             <Controller
                 name="interimReliefRequested"
@@ -257,7 +287,7 @@ export const AppealDetailsSection = ({
                             id="interimReliefRequested"
                             aria-invalid={fieldState.invalid}
                             placeholder="Interim order if requested"
-                            className="min-h-30"
+                            className="min-h-32 resize-y"
                             disabled={
                                 !isFieldEditable('interimReliefRequested')
                             }
@@ -268,7 +298,11 @@ export const AppealDetailsSection = ({
                     </Field>
                 )}
             />
-            <h6>9. Matter not pending with any other court, etc:</h6>
+
+            <FormSectionHeading
+                number={9}
+                title="Matter not pending with any other court, etc:"
+            />
 
             <Controller
                 name="isMatterPendingInCourt"

@@ -16,7 +16,7 @@ import {
     Field,
     FieldError,
     FieldGroup,
-    FieldLabel,
+    // FieldLabel,
 } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
 import { apiFetch } from '@/lib/api';
@@ -141,8 +141,8 @@ export default function VerifierAppealDetailPage(props: Props) {
     }
 
     return (
-        <>
-            <Card className="max-w-4xl">
+        <div className="max-w-6xl  space-y-4">
+            <Card>
                 <AppealHeader id={appeal.id} status={appeal.status} />
                 <CardContent className="space-y-6">
                     {/* appeal detail */}
@@ -162,14 +162,26 @@ export default function VerifierAppealDetailPage(props: Props) {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="verifierComment">
+                                        <div>
+                                            <h3 className="text-sm font-medium">
+                                                Verifier Comment
+                                            </h3>
+                                            <p className="mt-1 text-sm text-muted-foreground">
+                                                Add your observations before
+                                                forwarding this appeal to the
+                                                Registrar.
+                                            </p>
+                                        </div>
+
+                                        {/* <FieldLabel htmlFor="verifierComment">
                                             Verifier Comment
-                                        </FieldLabel>
+                                        </FieldLabel> */}
                                         <Textarea
                                             {...field}
                                             id="verifierComment"
                                             aria-invalid={fieldState.invalid}
                                             placeholder="Verifier comment"
+                                            className="min-h-28"
                                         />
                                         {fieldState.invalid && (
                                             <FieldError
@@ -226,6 +238,6 @@ export default function VerifierAppealDetailPage(props: Props) {
                     </form>
                 </CardContent>
             </Card>
-        </>
+        </div>
     );
 }

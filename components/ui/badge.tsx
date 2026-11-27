@@ -20,8 +20,19 @@ const badgeVariants = cva(
                 ghost: 'hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50',
                 link: 'text-primary underline-offset-4 hover:underline',
 
+                // Semantic status variants
+                info: 'border-transparent bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300',
+                warning:
+                    'border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300',
+                hearing:
+                    'border-transparent bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-300',
+                registrar:
+                    'border-transparent bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300',
+                success:
+                    'border-transparent bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300',
+
+                // Existing payment variants
                 pending: 'bg-orange-400 text-black border-transparent',
-                success: 'bg-green-400 text-black border-transparent',
                 failed: 'bg-red-500 text-black border-transparent',
             },
         },

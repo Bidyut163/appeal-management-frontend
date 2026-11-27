@@ -76,7 +76,7 @@ export default function ChecklistCard({
     });
 
     return (
-        <Card className="mt-4 max-w-4xl">
+        <Card className="mt-4 max-w-6xl">
             <CardHeader>
                 <CardTitle className="text-center">FORM A</CardTitle>
                 <CardDescription className="text-center">
@@ -211,7 +211,7 @@ export default function ChecklistCard({
                                     field={field}
                                     fieldState={fieldState}
                                     id="isCertifiedCopyFiled"
-                                    label="3. Whether certified copy of the impugned Order/Judgment is filed with the appeal."
+                                    label="4. Whether certified copy of the impugned Order/Judgment is filed with the appeal."
                                 />
                             )}
                         />
@@ -274,7 +274,7 @@ export default function ChecklistCard({
                                     field={field}
                                     fieldState={fieldState}
                                     id="certifiedCopyReceiptDate"
-                                    label="e. Date of receipt of certified coр:"
+                                    label="e. Date of receipt of certified copy:"
                                 />
                             )}
                         />

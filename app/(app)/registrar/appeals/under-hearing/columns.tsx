@@ -1,8 +1,10 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/utils/formatDate';
 import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpRightIcon } from 'lucide-react';
 import Link from 'next/link';
 
 // This type is used to define the shape of our data.
@@ -23,14 +25,33 @@ export type Appeal = {
     hearings: Hearing[];
 };
 
+const hearingStatusConfig = {
+    SCHEDULED: {
+        label: 'Scheduled',
+        variant: 'default',
+    },
+    COMPLETED: {
+        label: 'Completed',
+        variant: 'secondary',
+    },
+} as const;
+
 export const columns: ColumnDef<Appeal>[] = [
     {
         accessorKey: 'id',
         header: 'Appeal ID',
+        cell: ({ row }) => (
+            <span className="font-semibold tabular-nums">
+                #{row.original.id}
+            </span>
+        ),
     },
     {
         accessorKey: 'appellantName',
         header: 'Appellant Name',
+        cell: ({ row }) => (
+            <span className="font-medium">{row.original.appellantName}</span>
+        ),
     },
     {
         accessorKey: 'respondentName',
@@ -39,7 +60,11 @@ export const columns: ColumnDef<Appeal>[] = [
     {
         accessorKey: 'createdAt',
         header: 'Filed On',
-        cell: ({ row }) => formatDate(row.original.createdAt),
+        cell: ({ row }) => (
+            <span className="text-muted-foreground">
+                {formatDate(row.original.createdAt)}
+            </span>
+        ),
     },
 
     {
@@ -48,11 +73,13 @@ export const columns: ColumnDef<Appeal>[] = [
         cell: ({ row }) => {
             const hearing = row.original.hearings[0];
 
-            if (!hearing) {
-                return '—';
-            }
+            if (!hearing) return '—';
 
-            return `Hearing ${hearing.hearingNumber}`;
+            return (
+                <span className="font-medium">
+                    Hearing #{hearing.hearingNumber}
+                </span>
+            );
         },
     },
     {
@@ -61,11 +88,13 @@ export const columns: ColumnDef<Appeal>[] = [
         cell: ({ row }) => {
             const hearing = row.original.hearings[0];
 
-            if (!hearing) {
-                return '—';
-            }
+            if (!hearing) return '—';
 
-            return formatDate(hearing.hearingDate);
+            return (
+                <span className="font-medium tabular-nums">
+                    {formatDate(hearing.hearingDate)}
+                </span>
+            );
         },
     },
     {
@@ -74,26 +103,28 @@ export const columns: ColumnDef<Appeal>[] = [
         cell: ({ row }) => {
             const hearing = row.original.hearings[0];
 
-            if (!hearing) {
-                return '—';
-            }
+            if (!hearing) return '—';
 
-            return hearing.status;
+            const status = hearingStatusConfig[hearing.status];
+
+            return <Badge variant={status.variant}>{status.label}</Badge>;
         },
     },
 
     {
         id: 'actions',
-        header: 'Actions',
-        cell: ({ row }) => {
-            const { id } = row.original;
-            return (
-                <Button variant="outline" asChild>
-                    <Link href={`/registrar/appeals/under-hearing/${id}`}>
-                        View
+        header: () => <div className="text-right">Actions</div>,
+        cell: ({ row }) => (
+            <div className="flex justify-end">
+                <Button variant="outline" size="sm" asChild>
+                    <Link
+                        href={`/registrar/appeals/under-hearing/${row.original.id}`}
+                    >
+                        View Details
+                        <ArrowUpRightIcon className="ml-1 h-3.5 w-3.5" />
                     </Link>
                 </Button>
-            );
-        },
+            </div>
+        ),
     },
 ];
