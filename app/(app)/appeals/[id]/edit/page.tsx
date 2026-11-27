@@ -344,7 +344,7 @@ export default function EditPage(props: Props) {
                 </CardContent>
             </Card>
 
-            <Card className="max-w-3xl">
+            <Card className="w-full">
                 <CardHeader>
                     <CardTitle>Edit Appeal</CardTitle>
                     <CardDescription>
